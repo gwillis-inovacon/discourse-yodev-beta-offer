@@ -55,36 +55,36 @@
     var COPY = {
       en: {
         tag: "Limited beta",
-        anonHeadline: "3 months of Business — free.",
-        anonSub: "Full Marketplace + Workplace access. No card.",
+        anonHeadline: "3 months of Business — free. (no card)",
+        memberHeadline: "3 months of Business — free & active.",
+        sub: "Full access to Dev Marketplace + Workplace.",
+        hook: "Find your next project · Get organized · Today.",
         anonCta: "Claim your beta",
-        memberHeadline: "Your Business beta is live.",
-        memberSub: "Everything on yoDEV, unlocked for 3 months.",
         memberCta: "Open yoDEV",
         signupTitle: "You’re getting Business — free for 3 months",
-        signupBody: "Full Business features across Marketplace + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
+        signupBody: "Full access to Dev Marketplace + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
       },
       es: {
         tag: "Beta limitada",
-        anonHeadline: "3 meses de Business — gratis.",
-        anonSub: "Acceso completo a Marketplace + Workplace. Sin tarjeta.",
+        anonHeadline: "3 meses de Business — gratis. (sin tarjeta)",
+        memberHeadline: "3 meses de Business — gratis y activado.",
+        sub: "Acceso completo a Dev Marketplace + Workplace.",
+        hook: "Encuentra tu próximo proyecto · Organízate · Hoy.",
         anonCta: "Activar mi beta",
-        memberHeadline: "Tu beta de Business está activa.",
-        memberSub: "Todo yoDEV, desbloqueado por 3 meses.",
         memberCta: "Abrir yoDEV",
         signupTitle: "Obtienes Business gratis por 3 meses",
-        signupBody: "Todas las funciones Business en Marketplace + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
+        signupBody: "Acceso completo a Dev Marketplace + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
       },
       pt: {
         tag: "Beta limitado",
-        anonHeadline: "3 meses de Business — grátis.",
-        anonSub: "Acesso completo ao Marketplace + Workplace. Sem cartão.",
+        anonHeadline: "3 meses de Business — grátis. (sem cartão)",
+        memberHeadline: "3 meses de Business — grátis e ativo.",
+        sub: "Acesso completo ao Dev Marketplace + Workplace.",
+        hook: "Encontre seu próximo projeto · Organize-se · Hoje.",
         anonCta: "Ativar meu beta",
-        memberHeadline: "Seu beta de Business está ativo.",
-        memberSub: "Tudo no yoDEV, liberado por 3 meses.",
         memberCta: "Abrir yoDEV",
         signupTitle: "Você ganha Business grátis por 3 meses",
-        signupBody: "Todos os recursos Business no Marketplace + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
+        signupBody: "Acesso completo ao Dev Marketplace + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
       },
     };
 
@@ -165,8 +165,12 @@
       var sub = document.createElement("span");
       sub.className = "yodev-beta-banner__sub";
       sub.textContent = parts.sub;
+      var hook = document.createElement("span");
+      hook.className = "yodev-beta-banner__hook";
+      hook.textContent = parts.hook;
       copyWrap.appendChild(headline);
       copyWrap.appendChild(sub);
+      copyWrap.appendChild(hook);
 
       var cta = document.createElement("a");
       cta.className = "yodev-beta-banner__cta";
@@ -401,7 +405,8 @@
             var bannerParts = {
               tag: copy.tag,
               headline: isLoggedIn ? copy.memberHeadline : copy.anonHeadline,
-              sub: isLoggedIn ? copy.memberSub : copy.anonSub,
+              sub: copy.sub,
+              hook: copy.hook,
               cta: isLoggedIn ? copy.memberCta : copy.anonCta,
             };
 
@@ -441,7 +446,7 @@
 
           if (!isLocallyDismissed()) {
             var bannerEl2 = buildBanner(
-              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.anonSub, cta: copy2.anonCta },
+              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, hook: copy2.hook, cta: copy2.anonCta },
               ctaHref2,
               function () {
                 setLocallyDismissed();

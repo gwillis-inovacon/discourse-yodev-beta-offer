@@ -71,13 +71,22 @@
     margin-top: 1px;
   }
 
+  &__hook {
+    font-size: 0.78rem;
+    font-weight: 510;
+    color: #c7ccff;
+    margin-top: 3px;
+  }
+
   &__cta {
     flex-shrink: 0;
     display: inline-block;
     padding: 7px 16px;
     border-radius: 6px;
     background: #5e6ad2;
-    color: #ffffff;
+    // !important: Discourse core link styles override an <a> colour otherwise,
+    // which made the CTA text invisible until :hover (only the hover rule won).
+    color: #ffffff !important;
     font-weight: 510;
     font-size: 0.82rem;
     text-decoration: none;
@@ -87,7 +96,7 @@
     &:hover,
     &:focus {
       background: #7170ff;
-      color: #ffffff;
+      color: #ffffff !important;
       text-decoration: none;
     }
     &:active {
