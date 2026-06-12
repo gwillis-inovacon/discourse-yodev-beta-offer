@@ -1,0 +1,108 @@
+<!--
+  yoDEV Beta Offer — static HTML ad card (YOD-315 W2 spin-off)
+
+  A self-contained card version of the Beta Offer banner for use as a Discourse
+  HOUSE AD (Admin → Plugins → discourse-adplugin → House Ads) in slots like
+  "topic-list-top", "topic-above-post-stream", "topic-above-suggested",
+  "post-bottom", or between topics. Also works pasted anywhere that renders HTML.
+
+  Uses the ANON / conversion copy (ad slots mostly reach logged-out readers).
+  CTA → https://yodev.dev — change the href if you want a different target.
+
+  HOW TO USE:
+    1. Pick the language card below (ES / EN / PT).
+    2. Copy the <style> block ONCE + the chosen card markup into the house-ad
+       HTML field. (The <style> is shared — if you place more than one card on
+       the same page you only need the <style> once.)
+    3. The card is centered, max-width 720px, with its own dark "offer" styling
+       so it reads as a promo regardless of the forum theme (light or dark).
+-->
+
+<style>
+  .yodev-beta-ad {
+    box-sizing: border-box;
+    max-width: 720px;
+    margin: 14px auto;
+    padding: 18px 22px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1b1c2b 0%, #131420 100%);
+    border: 1px solid rgba(94, 106, 210, 0.45);
+    box-shadow: inset 0 1px 0 rgba(113, 112, 255, 0.4);
+    color: #f4f5fb;
+    font-family: inherit;
+    text-align: center;
+  }
+  .yodev-beta-ad * { box-sizing: border-box; }
+  .yodev-beta-ad__tag {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #c7ccff;
+    background: rgba(94, 106, 210, 0.22);
+    border: 1px solid rgba(94, 106, 210, 0.5);
+    margin-bottom: 10px;
+  }
+  .yodev-beta-ad__headline {
+    font-size: 1.15rem;
+    font-weight: 590;
+    color: #f7f8fc;
+    line-height: 1.25;
+  }
+  .yodev-beta-ad__headline span { color: #a6abc6; font-weight: 510; }
+  .yodev-beta-ad__sub { font-size: 0.85rem; color: #a6abc6; margin-top: 6px; }
+  .yodev-beta-ad__hook {
+    font-size: 0.9rem;
+    font-weight: 510;
+    color: #c7ccff;
+    margin-top: 8px;
+  }
+  .yodev-beta-ad__cta {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 9px 22px;
+    border-radius: 7px;
+    background: #5e6ad2;
+    color: #ffffff !important; /* beats Discourse core link colour */
+    font-weight: 510;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+  .yodev-beta-ad__cta:hover,
+  .yodev-beta-ad__cta:focus {
+    background: #7170ff;
+    color: #ffffff !important;
+    text-decoration: none;
+  }
+</style>
+
+<!-- ════════════════ ESPAÑOL (default) ════════════════ -->
+<div class="yodev-beta-ad">
+  <div class="yodev-beta-ad__tag">Beta limitada</div>
+  <div class="yodev-beta-ad__headline">3 meses de Business — gratis. <span>(sin tarjeta)</span></div>
+  <div class="yodev-beta-ad__sub">Acceso completo a Dev Marketplace + Workplace.</div>
+  <div class="yodev-beta-ad__hook">Encuentra tu próximo proyecto · Organízate · Hoy.</div>
+  <a class="yodev-beta-ad__cta" href="https://yodev.dev">Activar mi beta</a>
+</div>
+
+<!-- ════════════════ ENGLISH ════════════════ -->
+<div class="yodev-beta-ad">
+  <div class="yodev-beta-ad__tag">Limited beta</div>
+  <div class="yodev-beta-ad__headline">3 months of Business — free. <span>(no card)</span></div>
+  <div class="yodev-beta-ad__sub">Full access to Dev Marketplace + Workplace.</div>
+  <div class="yodev-beta-ad__hook">Find your next project · Get organized · Today.</div>
+  <a class="yodev-beta-ad__cta" href="https://yodev.dev">Claim your beta</a>
+</div>
+
+<!-- ════════════════ PORTUGUÊS ════════════════ -->
+<div class="yodev-beta-ad">
+  <div class="yodev-beta-ad__tag">Beta limitado</div>
+  <div class="yodev-beta-ad__headline">3 meses de Business — grátis. <span>(sem cartão)</span></div>
+  <div class="yodev-beta-ad__sub">Acesso completo ao Dev Marketplace + Workplace.</div>
+  <div class="yodev-beta-ad__hook">Encontre seu próximo projeto · Organize-se · Hoje.</div>
+  <a class="yodev-beta-ad__cta" href="https://yodev.dev">Ativar meu beta</a>
+</div>
