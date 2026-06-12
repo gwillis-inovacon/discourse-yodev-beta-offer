@@ -153,24 +153,22 @@
       var inner = document.createElement("div");
       inner.className = "yodev-beta-banner__inner";
 
+      // Row 1 — headline (full width)
+      var headline = document.createElement("div");
+      headline.className = "yodev-beta-banner__headline";
+      headline.textContent = parts.headline;
+
+      // Row 2 — [tag] · sub · [cta]
+      var mid = document.createElement("div");
+      mid.className = "yodev-beta-banner__mid";
+
       var tag = document.createElement("span");
       tag.className = "yodev-beta-banner__tag";
       tag.textContent = parts.tag;
 
-      var copyWrap = document.createElement("div");
-      copyWrap.className = "yodev-beta-banner__copy";
-      var headline = document.createElement("span");
-      headline.className = "yodev-beta-banner__headline";
-      headline.textContent = parts.headline;
       var sub = document.createElement("span");
       sub.className = "yodev-beta-banner__sub";
       sub.textContent = parts.sub;
-      var hook = document.createElement("span");
-      hook.className = "yodev-beta-banner__hook";
-      hook.textContent = parts.hook;
-      copyWrap.appendChild(headline);
-      copyWrap.appendChild(sub);
-      copyWrap.appendChild(hook);
 
       var cta = document.createElement("a");
       cta.className = "yodev-beta-banner__cta";
@@ -178,17 +176,28 @@
       // Open in same tab — the CTA is a first-party app URL
       cta.textContent = parts.cta;
 
+      mid.appendChild(tag);
+      mid.appendChild(sub);
+      mid.appendChild(cta);
+
+      // Row 3 — developer hook (full width)
+      var hook = document.createElement("div");
+      hook.className = "yodev-beta-banner__hook";
+      hook.textContent = parts.hook;
+
+      inner.appendChild(headline);
+      inner.appendChild(mid);
+      inner.appendChild(hook);
+
+      // Dismiss — anchored top-right of the banner
       var dismiss = document.createElement("button");
       dismiss.className = "yodev-beta-banner__dismiss";
       dismiss.setAttribute("aria-label", "Dismiss");
       dismiss.innerHTML = "&times;";
       dismiss.addEventListener("click", onDismiss, { once: true });
 
-      inner.appendChild(tag);
-      inner.appendChild(copyWrap);
-      inner.appendChild(cta);
-      inner.appendChild(dismiss);
       banner.appendChild(inner);
+      banner.appendChild(dismiss);
       return banner;
     }
 
