@@ -54,28 +54,37 @@
 
     var COPY = {
       en: {
-        anonText: "Free beta — get 3 months of Business free across the yoDEV platform. No card.",
-        anonCta: "Sign up free",
-        memberText: "Your 3 months of free Business are live — explore the yoDEV platform.",
+        tag: "Limited beta",
+        anonHeadline: "3 months of Business — free.",
+        anonSub: "Full Marketplace + Workplace access. No card.",
+        anonCta: "Claim your beta",
+        memberHeadline: "Your Business beta is live.",
+        memberSub: "Everything on yoDEV, unlocked for 3 months.",
         memberCta: "Open yoDEV",
-        signupTitle: "You’re getting 3 months of Business — free",
-        signupBody: "Full Business features across Marketplace + Workplace for 3 months. No credit card required. After that it reverts to Free unless you upgrade.",
+        signupTitle: "You’re getting Business — free for 3 months",
+        signupBody: "Full Business features across Marketplace + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
       },
       es: {
-        anonText: "Beta gratuita: 3 meses de Business gratis en toda la plataforma yoDEV. Sin tarjeta.",
-        anonCta: "Regístrate gratis",
-        memberText: "Tus 3 meses de Business gratis están activos — explora la plataforma yoDEV.",
+        tag: "Beta limitada",
+        anonHeadline: "3 meses de Business — gratis.",
+        anonSub: "Acceso completo a Marketplace + Workplace. Sin tarjeta.",
+        anonCta: "Activar mi beta",
+        memberHeadline: "Tu beta de Business está activa.",
+        memberSub: "Todo yoDEV, desbloqueado por 3 meses.",
         memberCta: "Abrir yoDEV",
-        signupTitle: "Obtén 3 meses de Business gratis",
-        signupBody: "Todas las funciones Business en Marketplace + Workplace durante 3 meses. Sin tarjeta de crédito. Luego vuelve a Free, a menos que elijas actualizar.",
+        signupTitle: "Obtienes Business gratis por 3 meses",
+        signupBody: "Todas las funciones Business en Marketplace + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
       },
       pt: {
-        anonText: "Beta gratuito: 3 meses de Business grátis em toda a plataforma yoDEV. Sem cartão.",
-        anonCta: "Cadastre-se grátis",
-        memberText: "Seus 3 meses de Business grátis estão ativos — explore a plataforma yoDEV.",
+        tag: "Beta limitado",
+        anonHeadline: "3 meses de Business — grátis.",
+        anonSub: "Acesso completo ao Marketplace + Workplace. Sem cartão.",
+        anonCta: "Ativar meu beta",
+        memberHeadline: "Seu beta de Business está ativo.",
+        memberSub: "Tudo no yoDEV, liberado por 3 meses.",
         memberCta: "Abrir yoDEV",
-        signupTitle: "Você terá 3 meses de Business — grátis",
-        signupBody: "Todas as funcionalidades Business no Marketplace + Workplace por 3 meses. Sem cartão de crédito. Depois disso, volta ao Free, a menos que faça upgrade.",
+        signupTitle: "Você ganha Business grátis por 3 meses",
+        signupBody: "Todos os recursos Business no Marketplace + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
       },
     };
 
@@ -137,29 +146,45 @@
 
     // ─── Banner DOM builder
 
-    function buildBanner(copy, ctaHref, onDismiss) {
+    function buildBanner(parts, ctaHref, onDismiss) {
       var banner = document.createElement("div");
       banner.className = "yodev-beta-banner";
 
-      var text = document.createElement("span");
-      text.className = "yodev-beta-banner__text";
-      text.textContent = copy.text;
+      var inner = document.createElement("div");
+      inner.className = "yodev-beta-banner__inner";
+
+      var tag = document.createElement("span");
+      tag.className = "yodev-beta-banner__tag";
+      tag.textContent = parts.tag;
+
+      var copyWrap = document.createElement("div");
+      copyWrap.className = "yodev-beta-banner__copy";
+      var headline = document.createElement("span");
+      headline.className = "yodev-beta-banner__headline";
+      headline.textContent = parts.headline;
+      var sub = document.createElement("span");
+      sub.className = "yodev-beta-banner__sub";
+      sub.textContent = parts.sub;
+      copyWrap.appendChild(headline);
+      copyWrap.appendChild(sub);
 
       var cta = document.createElement("a");
       cta.className = "yodev-beta-banner__cta";
       cta.href = ctaHref;
       // Open in same tab — the CTA is a first-party app URL
-      cta.textContent = copy.cta;
+      cta.textContent = parts.cta;
 
       var dismiss = document.createElement("button");
       dismiss.className = "yodev-beta-banner__dismiss";
       dismiss.setAttribute("aria-label", "Dismiss");
-      dismiss.textContent = "×"; // ×
+      dismiss.innerHTML = "&times;";
       dismiss.addEventListener("click", onDismiss, { once: true });
 
-      banner.appendChild(text);
-      banner.appendChild(cta);
-      banner.appendChild(dismiss);
+      inner.appendChild(tag);
+      inner.appendChild(copyWrap);
+      inner.appendChild(cta);
+      inner.appendChild(dismiss);
+      banner.appendChild(inner);
       return banner;
     }
 
@@ -169,6 +194,10 @@
       var panel = document.createElement("div");
       panel.className = "yodev-beta-signup-panel";
 
+      var tag = document.createElement("span");
+      tag.className = "yodev-beta-signup-panel__tag";
+      tag.textContent = copy.tag;
+
       var title = document.createElement("p");
       title.className = "yodev-beta-signup-panel__title";
       title.textContent = copy.signupTitle;
@@ -177,6 +206,7 @@
       body.className = "yodev-beta-signup-panel__body";
       body.textContent = copy.signupBody;
 
+      panel.appendChild(tag);
       panel.appendChild(title);
       panel.appendChild(body);
       return panel;
@@ -368,12 +398,14 @@
 
           // ── Banner (every page, unless dismissed) ────────────────────────
           if (!isDismissed) {
-            var bannerCopy = {
-              text: isLoggedIn ? copy.memberText : copy.anonText,
+            var bannerParts = {
+              tag: copy.tag,
+              headline: isLoggedIn ? copy.memberHeadline : copy.anonHeadline,
+              sub: isLoggedIn ? copy.memberSub : copy.anonSub,
               cta: isLoggedIn ? copy.memberCta : copy.anonCta,
             };
 
-            var bannerEl = buildBanner(bannerCopy, ctaHref, function () {
+            var bannerEl = buildBanner(bannerParts, ctaHref, function () {
               console.log("[yodev-beta-offer] banner dismissed by user");
               setLocallyDismissed();
               if (isLoggedIn && s.dismissedFieldId > 0) {
@@ -409,7 +441,7 @@
 
           if (!isLocallyDismissed()) {
             var bannerEl2 = buildBanner(
-              { text: copy2.anonText, cta: copy2.anonCta },
+              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.anonSub, cta: copy2.anonCta },
               ctaHref2,
               function () {
                 setLocallyDismissed();

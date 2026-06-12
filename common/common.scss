@@ -9,114 +9,174 @@
 }
 
 // ─── Banner ──────────────────────────────────────────────────────────────────
-// Full-width top bar, brand-indigo accent. Works on light and dark Discourse
-// themes. Not obnoxious — no animation, no overlay, no fixed-position hijack.
+// A refined full-width "offer band": dark indigo-charcoal background so it reads
+// as a distinct promotional strip on any Discourse theme (light or dark), with a
+// brand-indigo accent line, a BETA tag, a benefit-led headline + muted subline,
+// and a solid indigo CTA. Inner content is max-width + left-aligned for a
+// premium feel (not a centered "default banner").
 
 .yodev-beta-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 10px 16px;
-  background-color: #5e6ad2;
-  color: #ffffff;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  // Sits just above the main content area without disrupting layout
   width: 100%;
   box-sizing: border-box;
-  position: relative;
+  background: linear-gradient(135deg, #1b1c2b 0%, #131420 100%);
+  border-bottom: 1px solid rgba(94, 106, 210, 0.45);
+  box-shadow: inset 0 2px 0 0 rgba(113, 112, 255, 0.5); // thin top accent glow
+  color: #f4f5fb;
+  font-family: inherit;
 
-  &__text {
+  &__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+  }
+
+  &__tag {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: #c7ccff;
+    background: rgba(94, 106, 210, 0.22);
+    border: 1px solid rgba(94, 106, 210, 0.5);
+    white-space: nowrap;
+  }
+
+  &__copy {
     flex: 1 1 auto;
     min-width: 0;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+
+  &__headline {
+    font-size: 0.95rem;
+    font-weight: 590;
+    color: #f7f8fc;
+  }
+
+  &__sub {
+    font-size: 0.78rem;
+    color: #a6abc6;
+    margin-top: 1px;
   }
 
   &__cta {
+    flex-shrink: 0;
     display: inline-block;
-    padding: 5px 14px;
-    border-radius: 4px;
-    background-color: #ffffff;
-    color: #5e6ad2;
-    font-weight: 600;
-    font-size: 0.875rem;
+    padding: 7px 16px;
+    border-radius: 6px;
+    background: #5e6ad2;
+    color: #ffffff;
+    font-weight: 510;
+    font-size: 0.82rem;
     text-decoration: none;
     white-space: nowrap;
-    flex-shrink: 0;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.15s ease, transform 0.05s ease;
 
     &:hover,
     &:focus {
-      background-color: #eceeff;
-      color: #4a55b8;
+      background: #7170ff;
+      color: #ffffff;
       text-decoration: none;
+    }
+    &:active {
+      transform: scale(0.97);
     }
   }
 
   &__dismiss {
-    // Right-anchored dismiss button
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.2rem;
+    color: rgba(244, 245, 251, 0.55);
+    font-size: 1.25rem;
     line-height: 1;
     cursor: pointer;
-    flex-shrink: 0;
     transition: background-color 0.15s ease, color 0.15s ease;
 
     &:hover,
     &:focus {
-      background-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
+    }
+  }
+
+  // Stack tidily on narrow screens
+  @media (max-width: 600px) {
+    &__inner {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    &__copy {
+      flex-basis: 100%;
+      order: 2;
+    }
+    &__cta {
+      order: 3;
+    }
+    &__dismiss {
+      order: 1;
+      margin-left: auto;
+    }
+    &__tag {
+      order: 0;
     }
   }
 }
 
 // ─── Signup / Login panel ────────────────────────────────────────────────────
-// Callout box inserted above the signup (or login) form. No dismiss button —
-// it's a registration page, showing the offer here is valuable context.
+// Callout above the signup form — same brand language as the banner. Adapts to
+// light and dark Discourse themes via a translucent indigo treatment.
 
 .yodev-beta-signup-panel {
-  border: 2px solid #5e6ad2;
-  border-radius: 8px;
-  padding: 16px 20px;
+  border: 1px solid rgba(94, 106, 210, 0.55);
+  border-radius: 10px;
+  padding: 16px 18px;
   margin-bottom: 20px;
-  background-color: #f4f5ff; // light indigo tint; invisible on dark themes due to specificity — acceptable
-  color: #1c1e2b;
+  background: linear-gradient(135deg, rgba(94, 106, 210, 0.1) 0%, rgba(94, 106, 210, 0.04) 100%);
 
-  // Dark-theme accommodation: Discourse sets .d-dark on <html> or <body>
-  .d-dark &,
-  [data-theme-color-scheme="dark"] & {
-    background-color: rgba(94, 106, 210, 0.15);
-    color: inherit;
-    border-color: #7a85e0;
+  &__tag {
+    display: inline-flex;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: var(--primary, #5e6ad2);
+    background: rgba(94, 106, 210, 0.16);
+    margin-bottom: 8px;
   }
 
   &__title {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.02rem;
+    font-weight: 600;
     margin: 0 0 6px 0;
-    color: #5e6ad2;
-
-    .d-dark &,
-    [data-theme-color-scheme="dark"] & {
-      color: #9ba8f0;
-    }
+    color: var(--primary-high, #5e6ad2);
   }
 
   &__body {
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
-    color: inherit;
+    color: var(--primary-medium, inherit);
   }
 }
