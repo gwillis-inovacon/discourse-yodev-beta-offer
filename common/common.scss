@@ -1,0 +1,122 @@
+// Pass theme settings to head_tag.html's plain <script> via CSS custom
+// properties. SCSS interpolation works in Discourse theme components
+// (#{$setting_name}), unlike ERB in head_tag.html.
+
+:root {
+  --yodev-beta-cta-url: "#{$cta_url}";
+  --yodev-beta-marketplace-url: "#{$marketplace_url}";
+  --yodev-beta-dismissed-field-id: #{$dismissed_field_id};
+}
+
+// ─── Banner ──────────────────────────────────────────────────────────────────
+// Full-width top bar, brand-indigo accent. Works on light and dark Discourse
+// themes. Not obnoxious — no animation, no overlay, no fixed-position hijack.
+
+.yodev-beta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background-color: #5e6ad2;
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  // Sits just above the main content area without disrupting layout
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+
+  &__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+  }
+
+  &__cta {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #5e6ad2;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover,
+    &:focus {
+      background-color: #eceeff;
+      color: #4a55b8;
+      text-decoration: none;
+    }
+  }
+
+  &__dismiss {
+    // Right-anchored dismiss button
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+  }
+}
+
+// ─── Signup / Login panel ────────────────────────────────────────────────────
+// Callout box inserted above the signup (or login) form. No dismiss button —
+// it's a registration page, showing the offer here is valuable context.
+
+.yodev-beta-signup-panel {
+  border: 2px solid #5e6ad2;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  background-color: #f4f5ff; // light indigo tint; invisible on dark themes due to specificity — acceptable
+  color: #1c1e2b;
+
+  // Dark-theme accommodation: Discourse sets .d-dark on <html> or <body>
+  .d-dark &,
+  [data-theme-color-scheme="dark"] & {
+    background-color: rgba(94, 106, 210, 0.15);
+    color: inherit;
+    border-color: #7a85e0;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    color: #5e6ad2;
+
+    .d-dark &,
+    [data-theme-color-scheme="dark"] & {
+      color: #9ba8f0;
+    }
+  }
+
+  &__body {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+    color: inherit;
+  }
+}

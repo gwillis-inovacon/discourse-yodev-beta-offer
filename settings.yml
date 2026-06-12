@@ -1,0 +1,19 @@
+cta_url:
+  type: string
+  default: "https://yodev.dev"
+  description:
+    en: "Destination URL for the banner and signup-panel CTAs. Anonymous visitors are always sent here. Logged-in members are also sent here unless marketplace_url is also set."
+
+marketplace_url:
+  type: string
+  default: ""
+  description:
+    en: "Optional. If non-empty, logged-in members who dismiss or click the banner CTA are sent to this URL instead of cta_url (e.g. https://devmarket.yodev.dev). Leave blank to use cta_url for all users."
+
+dismissed_field_id:
+  type: integer
+  default: 0
+  min: 0
+  max: 1000
+  description:
+    en: "Numeric ID of a Discourse User Field used to persist a logged-in member's dismissal across devices and browsers. Setup required: (1) Go to Admin → Customize → User Fields and create a new field (suggested name: 'beta_offer_dismissed', type: text or dropdown, editable by user). (2) Note the numeric ID Discourse assigns it. (3) Enter that ID here. (4) Also go to Admin → Settings → Users and add 'user_field_<id>' (e.g. user_field_3) to the 'public user custom fields' site setting so that /session/current.json returns it. If this setting is 0 (the default), member dismissal falls back to localStorage (device-local, lost on browser data clear)."
