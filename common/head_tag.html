@@ -47,6 +47,8 @@
         ctaUrl: readCssVarString("--yodev-beta-cta-url"),
         marketplaceUrl: readCssVarString("--yodev-beta-marketplace-url"),
         dismissedFieldId: readCssVarInt("--yodev-beta-dismissed-field-id", 0),
+        splashEnabled: readCssVarInt("--yodev-beta-splash-enabled", 0) === 1,
+        splashDismissedFieldId: readCssVarInt("--yodev-beta-splash-dismissed-field-id", 0),
       };
     }
 
@@ -63,6 +65,11 @@
         memberCta: "Start now",
         signupTitle: "You’re getting Business — free for 3 months",
         signupBody: "Full access to Dev Marketplace + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
+        splashTitleAnon: "Get 3 months of Business — free",
+        splashTitleMember: "Your free Business beta is ready",
+        splashBodyAnon: "Full access to the Developer Marketplace + Workplace. No credit card. Reverts to Free after 3 months unless you upgrade.",
+        splashBodyMember: "Full access to the Developer Marketplace + Workplace is included with your account. Jump in.",
+        splashContinue: "Continue to the forum",
       },
       es: {
         tag: "Beta limitada",
@@ -74,6 +81,11 @@
         memberCta: "Vamos",
         signupTitle: "Obtienes Business gratis por 3 meses",
         signupBody: "Acceso completo a Dev Marketplace + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
+        splashTitleAnon: "Obtén 3 meses de Business — gratis",
+        splashTitleMember: "Tu beta Business gratis está lista",
+        splashBodyAnon: "Acceso completo al Developer Marketplace + Workplace. Sin tarjeta. Vuelve a Free tras 3 meses, salvo que actualices.",
+        splashBodyMember: "El acceso completo al Developer Marketplace + Workplace está incluido en tu cuenta. Entra.",
+        splashContinue: "Continuar al foro",
       },
       pt: {
         tag: "Beta limitado",
@@ -85,6 +97,11 @@
         memberCta: "Vamos",
         signupTitle: "Você ganha Business grátis por 3 meses",
         signupBody: "Acesso completo ao Dev Marketplace + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
+        splashTitleAnon: "Ganhe 3 meses de Business — grátis",
+        splashTitleMember: "Seu beta Business grátis está pronto",
+        splashBodyAnon: "Acesso completo ao Developer Marketplace + Workplace. Sem cartão. Volta ao Free após 3 meses, a menos que faça upgrade.",
+        splashBodyMember: "O acesso completo ao Developer Marketplace + Workplace está incluído na sua conta. Entre.",
+        splashContinue: "Continuar para o fórum",
       },
     };
 
@@ -110,6 +127,26 @@
         localStorage.setItem(LS_KEY, "1");
       } catch (e) {
         console.warn("[yodev-beta-offer] could not write localStorage:", e);
+      }
+    }
+
+    // Splash uses its own dismissal key so it's independent of the banner —
+    // dismissing the once-only splash must NOT hide the persistent banner.
+    var SPLASH_LS_KEY = "yodev_beta_splash_dismissed";
+
+    function isSplashLocallyDismissed() {
+      try {
+        return !!localStorage.getItem(SPLASH_LS_KEY);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function setSplashLocallyDismissed() {
+      try {
+        localStorage.setItem(SPLASH_LS_KEY, "1");
+      } catch (e) {
+        console.warn("[yodev-beta-offer] could not write splash localStorage:", e);
       }
     }
 
@@ -223,6 +260,79 @@
       panel.appendChild(title);
       panel.appendChild(body);
       return panel;
+    }
+
+    // ─── Splash DOM builder (full-screen one-time takeover)
+    // onDismiss fires on ×, the "continue" link, the backdrop, OR the CTA click
+    // (clicking through still counts as seen — it must never reappear).
+
+    function buildSplash(parts, ctaHref, onDismiss) {
+      var overlay = document.createElement("div");
+      overlay.className = "yodev-beta-splash";
+      overlay.setAttribute("role", "dialog");
+      overlay.setAttribute("aria-modal", "true");
+
+      var backdrop = document.createElement("div");
+      backdrop.className = "yodev-beta-splash__backdrop";
+      backdrop.addEventListener("click", onDismiss, { once: true });
+
+      var card = document.createElement("div");
+      card.className = "yodev-beta-splash__card";
+
+      var dismiss = document.createElement("button");
+      dismiss.className = "yodev-beta-splash__dismiss";
+      dismiss.setAttribute("aria-label", "Dismiss");
+      dismiss.innerHTML = "&times;";
+      dismiss.addEventListener("click", onDismiss, { once: true });
+
+      var tag = document.createElement("span");
+      tag.className = "yodev-beta-splash__tag";
+      tag.textContent = parts.tag;
+
+      var title = document.createElement("h2");
+      title.className = "yodev-beta-splash__title";
+      title.textContent = parts.title;
+
+      var body = document.createElement("p");
+      body.className = "yodev-beta-splash__body";
+      body.textContent = parts.body;
+
+      var hook = document.createElement("p");
+      hook.className = "yodev-beta-splash__hook";
+      hook.textContent = parts.hook;
+
+      var cta = document.createElement("a");
+      cta.className = "yodev-beta-splash__cta";
+      cta.href = ctaHref;
+      cta.textContent = parts.cta;
+      // Mark seen before navigating away (localStorage write runs first).
+      cta.addEventListener("click", onDismiss, { once: true });
+
+      var cont = document.createElement("button");
+      cont.className = "yodev-beta-splash__continue";
+      cont.textContent = parts.continueLabel;
+      cont.addEventListener("click", onDismiss, { once: true });
+
+      card.appendChild(dismiss);
+      card.appendChild(tag);
+      card.appendChild(title);
+      card.appendChild(body);
+      card.appendChild(hook);
+      card.appendChild(cta);
+      card.appendChild(cont);
+
+      overlay.appendChild(backdrop);
+      overlay.appendChild(card);
+      return overlay;
+    }
+
+    function insertSplash(splashEl) {
+      if (document.querySelector(".yodev-beta-splash")) {
+        console.log("[yodev-beta-offer] splash already present; skipping");
+        return;
+      }
+      (document.body || document.documentElement).appendChild(splashEl);
+      console.log("[yodev-beta-offer] splash inserted");
     }
 
     // ─── Poll helper
@@ -428,6 +538,53 @@
             });
 
             insertBanner(bannerEl);
+          }
+
+          // ── Splash (full-screen, once-ever, anon + member, any page) ─────
+          // Independent of the banner's dismissal. Suppressed on /signup and
+          // /login (those already get the panel). splash_enabled gates it.
+          var sp = window.location.pathname || "";
+          var onAuthPage =
+            sp.indexOf("/signup") === 0 || sp.indexOf("/login") === 0;
+
+          if (s.splashEnabled && !onAuthPage) {
+            var splashDismissed;
+            if (isLoggedIn && s.splashDismissedFieldId > 0) {
+              var splashKey = "user_field_" + s.splashDismissedFieldId;
+              splashDismissed = !!(
+                currentUser.custom_fields &&
+                currentUser.custom_fields[splashKey]
+              );
+            } else {
+              splashDismissed = isSplashLocallyDismissed();
+            }
+
+            if (splashDismissed) {
+              console.log("[yodev-beta-offer] splash already dismissed; skipping");
+            } else {
+              var splashParts = {
+                tag: copy.tag,
+                title: isLoggedIn ? copy.splashTitleMember : copy.splashTitleAnon,
+                body: isLoggedIn ? copy.splashBodyMember : copy.splashBodyAnon,
+                hook: copy.hook,
+                cta: isLoggedIn ? copy.memberCta : copy.anonCta,
+                continueLabel: copy.splashContinue,
+              };
+              var splashDone = false;
+              var splashEl = buildSplash(splashParts, ctaHref, function () {
+                if (splashDone) return;
+                splashDone = true;
+                console.log("[yodev-beta-offer] splash dismissed/clicked");
+                setSplashLocallyDismissed();
+                if (isLoggedIn && s.splashDismissedFieldId > 0) {
+                  persistMemberDismissal(username, s.splashDismissedFieldId, csrfToken);
+                }
+                if (splashEl && splashEl.parentNode) {
+                  splashEl.parentNode.removeChild(splashEl);
+                }
+              });
+              insertSplash(splashEl);
+            }
           }
 
           // ── Signup / Login panel ─────────────────────────────────────────

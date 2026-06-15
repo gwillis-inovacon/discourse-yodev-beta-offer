@@ -6,6 +6,8 @@
   --yodev-beta-cta-url: "#{$cta_url}";
   --yodev-beta-marketplace-url: "#{$marketplace_url}";
   --yodev-beta-dismissed-field-id: #{$dismissed_field_id};
+  --yodev-beta-splash-enabled: #{if($splash_enabled, 1, 0)};
+  --yodev-beta-splash-dismissed-field-id: #{$splash_dismissed_field_id};
 }
 
 // ─── Banner ──────────────────────────────────────────────────────────────────
@@ -192,5 +194,153 @@
     line-height: 1.5;
     margin: 0;
     color: var(--primary-medium, inherit);
+  }
+}
+
+// ─── Full-screen Splash ──────────────────────────────────────────────────────
+// One-time full-page takeover (anonymous + members). Centered brand card over a
+// dimmed backdrop. Dismiss via × , the "continue" link, or backdrop click.
+// Content still renders underneath (client-side overlay) — SEO-safe, no wall.
+
+.yodev-beta-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000; // above Discourse chrome
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: inherit;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(6, 7, 12, 0.82);
+    backdrop-filter: blur(3px);
+    cursor: pointer;
+  }
+
+  &__card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+    text-align: center;
+    background: linear-gradient(135deg, #1b1c2b 0%, #131420 100%);
+    border: 1px solid rgba(94, 106, 210, 0.5);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6),
+      inset 0 2px 0 0 rgba(113, 112, 255, 0.5);
+    border-radius: 16px;
+    padding: 36px 30px 26px;
+    color: #f4f5fb;
+  }
+
+  &__dismiss {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: rgba(244, 245, 251, 0.5);
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover,
+    &:focus {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #c7ccff;
+    background: rgba(94, 106, 210, 0.22);
+    border: 1px solid rgba(94, 106, 210, 0.5);
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 590;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: #f7f8fc;
+  }
+
+  &__body {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #a6abc6;
+    margin: 0 0 16px;
+  }
+
+  &__hook {
+    font-size: 0.85rem;
+    font-weight: 510;
+    color: #c7ccff;
+    line-height: 1.3;
+    margin: 0 0 22px;
+  }
+
+  &__cta {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 20px;
+    border-radius: 8px;
+    background: #5e6ad2;
+    // !important: Discourse core link styles otherwise override the colour.
+    color: #ffffff !important;
+    font-weight: 510;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+
+    &:hover,
+    &:focus {
+      background: #7170ff;
+      color: #ffffff !important;
+      text-decoration: none;
+    }
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &__continue {
+    display: block;
+    margin: 14px auto 0;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    color: rgba(244, 245, 251, 0.55);
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      color: #ffffff;
+      text-decoration: underline;
+    }
   }
 }

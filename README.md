@@ -14,6 +14,16 @@ Portuguese; the active Discourse UI language is detected automatically.
 - **Signup panel (`/signup`, `/login`):** A bordered callout inserted above
   the signup/login form explaining the 3-month free Business offer. No dismiss
   button — it's contextual info for the form.
+- **Splash (optional, `splash_enabled`):** A **one-time** full-screen takeover
+  shown to *every* first-time visitor — anonymous **and** members — on whatever
+  page they land on (great for transient article-link traffic). Dismiss via the
+  `×`, a "Continue to the forum" link, the backdrop, or by clicking the CTA.
+  Once dismissed/clicked it **never shows again**; returning visitors see only
+  the subtle banner. It's a client-side overlay (content renders underneath) —
+  **SEO-safe, not a login wall.** Off by default; flip `splash_enabled` to go
+  live. Suppressed on `/signup` and `/login` (those already show the panel).
+  Splash dismissal is tracked **separately** from the banner, so dismissing the
+  splash leaves the banner intact.
 - **Auth awareness:** Reads `/session/current.json` on every page load to
   determine auth state and personalise copy + CTA destination.
 - **Dismissal persistence:**
@@ -34,7 +44,9 @@ Portuguese; the active Discourse UI language is detected automatically.
 |---|---|---|
 | `cta_url` | `https://yodev.dev` | CTA destination for anonymous visitors (and members when `marketplace_url` is empty). |
 | `marketplace_url` | _(empty)_ | If set, logged-in members' banner CTA points here instead of `cta_url`. E.g. `https://devmarket.yodev.dev`. |
-| `dismissed_field_id` | `0` | Numeric ID of a Discourse User Field for cross-device member dismissal. See setup below. |
+| `dismissed_field_id` | `0` | Numeric ID of a Discourse User Field for cross-device member dismissal of the **banner**. See setup below. |
+| `splash_enabled` | `false` | Show the one-time full-screen splash (anon + members, any page). Off so you can install/preview first; flip on to go live. |
+| `splash_dismissed_field_id` | `0` | Optional. Numeric ID of a **second** User Field that remembers a member's **splash** dismissal cross-device, so the once-only splash never reappears for them anywhere. Same setup as `dismissed_field_id` (create a separate field, e.g. `beta_splash_dismissed`, and expose it). If `0`, member splash dismissal falls back to localStorage. |
 
 ## `dismissed_field_id` User Field setup
 
@@ -80,6 +92,13 @@ auth state, dismissal check, DOM insertion). Verify:
 4. `/signup` shows the panel above the form.
 5. Dismissed banner does not reappear on reload (until localStorage is cleared
    / field is reset).
+6. **Splash:** set `splash_enabled` on; on a fresh browser, the full-screen
+   splash appears once (anon and member variants differ). Dismiss it (×,
+   "Continue", backdrop, or CTA) — it must not reappear on reload, while the
+   banner still shows. As a member with `splash_dismissed_field_id` configured,
+   confirm the splash field is written and the splash stays gone on another
+   device. To re-test, clear `yodev_beta_splash_dismissed` from localStorage
+   (and reset the field).
 
 ## Selector notes (if the banner or panel doesn't appear)
 
