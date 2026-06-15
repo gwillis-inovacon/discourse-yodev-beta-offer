@@ -232,7 +232,10 @@
   justify-content: center;
   padding: 20px;
   box-sizing: border-box;
-  font-family: inherit;
+  // DESIGN.md: Inter Variable + cv01/ss03 is non-negotiable for the Linear look.
+  font-family: "Inter", "Inter Variable", "SF Pro Display", -apple-system,
+    system-ui, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv01", "ss03";
 
   &__backdrop {
     position: absolute;
@@ -252,11 +255,12 @@
     max-height: 92vh;
     overflow-y: auto;
     box-sizing: border-box;
-    background: linear-gradient(160deg, #191a2e 0%, #111120 55%, #0d0e18 100%);
-    border: 1px solid rgba(94, 106, 210, 0.45);
-    border-radius: 20px;
+    // DESIGN.md surfaces: elevated #191a1b stepping down to panel #0f1011.
+    background: linear-gradient(160deg, #191a1b 0%, #141518 58%, #0f1011 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px; // DESIGN large-panel radius
     box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-    color: #f4f5fb;
+    color: #d0d6e0;
     animation: yodev-splash-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
@@ -293,7 +297,7 @@
     border: none;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.04);
-    color: rgba(244, 245, 251, 0.55);
+    color: #8a8f98; // DESIGN tertiary text
     font-size: 1.4rem;
     line-height: 1;
     cursor: pointer;
@@ -302,7 +306,7 @@
     &:hover,
     &:focus {
       background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
+      color: #f7f8f8;
     }
   }
 
@@ -346,16 +350,16 @@
     margin: 0 0 8px;
     font-size: 1.9rem;
     line-height: 1.1;
-    font-weight: 590;
-    letter-spacing: -0.02em;
-    color: #f7f8fc;
+    font-weight: 590; // DESIGN: max weight; never 700
+    letter-spacing: -0.704px; // DESIGN: negative tracking at display sizes
+    color: #f7f8f8; // DESIGN primary text (not pure #fff)
   }
 
   &__sub {
     margin: 0 0 22px;
     font-size: 0.95rem;
     line-height: 1.45;
-    color: #a6abc6;
+    color: #8a8f98; // DESIGN tertiary text
   }
 
   &__pillars {
@@ -367,8 +371,9 @@
 
   &__pillar {
     text-align: left;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    // DESIGN: cards are translucent white, never solid; 12px featured radius.
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 16px 16px 14px;
   }
@@ -396,7 +401,7 @@
   &__pillar-title {
     font-size: 0.92rem;
     font-weight: 590;
-    color: #f4f5fb;
+    color: #f7f8f8; // DESIGN primary text
     line-height: 1.2;
   }
 
@@ -420,7 +425,7 @@
       gap: 8px;
       font-size: 0.8rem;
       line-height: 1.35;
-      color: #c2c6d6;
+      color: #d0d6e0; // DESIGN secondary/body text
     }
   }
 
@@ -437,7 +442,9 @@
     box-sizing: border-box;
     text-align: center;
     padding: 14px 20px;
-    border-radius: 10px;
+    border-radius: 8px; // DESIGN card/button radius
+    // DESIGN primary CTA is brand indigo #5e6ad2; gradient to accent violet
+    // #7170ff is an in-system campaign emphasis (both are the brand accent).
     background: linear-gradient(135deg, #5e6ad2 0%, #7170ff 100%);
     // !important: Discourse core link styles otherwise override the colour.
     color: #ffffff !important;
@@ -449,7 +456,7 @@
 
     &:hover,
     &:focus {
-      filter: brightness(1.08);
+      filter: brightness(1.08); // shifts toward accent-hover #828fff
       color: #ffffff !important;
       text-decoration: none;
     }
@@ -461,7 +468,7 @@
   &__footnote {
     margin: 12px 0 0;
     font-size: 0.7rem;
-    color: #6f7488;
+    color: #62666d; // DESIGN quaternary text
     text-align: center;
   }
 
@@ -471,14 +478,14 @@
     padding: 4px 8px;
     background: transparent;
     border: none;
-    color: rgba(244, 245, 251, 0.5);
+    color: #8a8f98; // DESIGN tertiary text
     font-size: 0.8rem;
     font-family: inherit;
     cursor: pointer;
 
     &:hover,
     &:focus {
-      color: #ffffff;
+      color: #f7f8f8;
       text-decoration: underline;
     }
   }
