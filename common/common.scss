@@ -197,10 +197,31 @@
   }
 }
 
-// ─── Full-screen Splash ──────────────────────────────────────────────────────
-// One-time full-page takeover (anonymous + members). Centered brand card over a
-// dimmed backdrop. Dismiss via × , the "continue" link, or backdrop click.
-// Content still renders underneath (client-side overlay) — SEO-safe, no wall.
+// ─── Full-screen Splash (marketing takeover) ─────────────────────────────────
+// One-time full-page campaign for anonymous + members. Branded card over a
+// dimmed radial backdrop, two value pillars (Marketplace + Workplace), animated
+// entrance. Content renders underneath (client-side overlay) — SEO-safe, no wall.
+
+@keyframes yodev-splash-backdrop {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes yodev-splash-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes yodev-splash-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes yodev-splash-glow {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 0.85; transform: translate(-50%, -50%) scale(1.14); }
+}
+@keyframes yodev-splash-cta {
+  0%, 100% { box-shadow: 0 10px 30px rgba(94, 106, 210, 0.32); }
+  50%      { box-shadow: 0 0 0 4px rgba(113, 112, 255, 0.12), 0 12px 36px rgba(94, 106, 210, 0.52); }
+}
 
 .yodev-beta-splash {
   position: fixed;
@@ -216,123 +237,241 @@
   &__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(6, 7, 12, 0.82);
-    backdrop-filter: blur(3px);
+    background: radial-gradient(120% 120% at 50% 0%, rgba(30, 32, 64, 0.92) 0%, rgba(6, 7, 12, 0.93) 60%);
+    backdrop-filter: blur(4px);
     cursor: pointer;
+    animation: yodev-splash-backdrop 0.35s ease both;
   }
 
   &__card {
     position: relative;
     z-index: 1;
+    overflow: hidden;
     width: 100%;
-    max-width: 440px;
+    max-width: 600px;
+    max-height: 92vh;
+    overflow-y: auto;
     box-sizing: border-box;
-    text-align: center;
-    background: linear-gradient(135deg, #1b1c2b 0%, #131420 100%);
-    border: 1px solid rgba(94, 106, 210, 0.5);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6),
-      inset 0 2px 0 0 rgba(113, 112, 255, 0.5);
-    border-radius: 16px;
-    padding: 36px 30px 26px;
+    background: linear-gradient(160deg, #191a2e 0%, #111120 55%, #0d0e18 100%);
+    border: 1px solid rgba(94, 106, 210, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
     color: #f4f5fb;
+    animation: yodev-splash-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  &__glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 460px;
+    height: 320px;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(94, 106, 210, 0.5) 0%, rgba(94, 106, 210, 0) 70%);
+    filter: blur(36px);
+    transform: translate(-50%, -50%);
+    animation: yodev-splash-glow 7s ease-in-out infinite;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    padding: 34px 34px 24px;
   }
 
   &__dismiss {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     border: none;
-    border-radius: 7px;
-    background: transparent;
-    color: rgba(244, 245, 251, 0.5);
-    font-size: 1.35rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(244, 245, 251, 0.55);
+    font-size: 1.4rem;
     line-height: 1;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
 
     &:hover,
     &:focus {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
     }
   }
 
-  &__tag {
+  &__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 7px;
+    background: #5e6ad2;
+    color: #ffffff;
+    font-weight: 590;
+    font-size: 0.7rem;
+    letter-spacing: -0.02em;
+  }
+
+  &__pill {
     display: inline-flex;
     align-items: center;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     font-size: 0.625rem;
     font-weight: 600;
-    padding: 4px 10px;
+    padding: 5px 11px;
     border-radius: 999px;
     color: #c7ccff;
-    background: rgba(94, 106, 210, 0.22);
-    border: 1px solid rgba(94, 106, 210, 0.5);
-    margin-bottom: 16px;
+    background: rgba(94, 106, 210, 0.18);
+    border: 1px solid rgba(94, 106, 210, 0.45);
   }
 
-  &__title {
-    font-size: 1.5rem;
+  &__headline {
+    margin: 0 0 8px;
+    font-size: 1.9rem;
+    line-height: 1.1;
     font-weight: 590;
-    line-height: 1.2;
-    margin: 0 0 12px;
+    letter-spacing: -0.02em;
     color: #f7f8fc;
   }
 
-  &__body {
-    font-size: 0.9rem;
-    line-height: 1.5;
+  &__sub {
+    margin: 0 0 22px;
+    font-size: 0.95rem;
+    line-height: 1.45;
     color: #a6abc6;
-    margin: 0 0 16px;
   }
 
-  &__hook {
-    font-size: 0.85rem;
-    font-weight: 510;
-    color: #c7ccff;
-    line-height: 1.3;
-    margin: 0 0 22px;
+  &__pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  &__pillar {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 16px 16px 14px;
+  }
+
+  &__pillar-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  &__pillar-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: rgba(94, 106, 210, 0.16);
+    color: #9aa2ff;
+    border: 1px solid rgba(94, 106, 210, 0.3);
+  }
+
+  &__pillar-title {
+    font-size: 0.92rem;
+    font-weight: 590;
+    color: #f4f5fb;
+    line-height: 1.2;
+  }
+
+  &__pillar-tagline {
+    font-size: 0.72rem;
+    color: #8a8f98;
+    margin-top: 2px;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: #c2c6d6;
+    }
+  }
+
+  &__check {
+    flex-shrink: 0;
+    display: inline-flex;
+    margin-top: 1px;
+    color: #7170ff;
   }
 
   &__cta {
-    display: inline-block;
+    display: block;
     width: 100%;
     box-sizing: border-box;
-    padding: 13px 20px;
-    border-radius: 8px;
-    background: #5e6ad2;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #5e6ad2 0%, #7170ff 100%);
     // !important: Discourse core link styles otherwise override the colour.
     color: #ffffff !important;
-    font-weight: 510;
-    font-size: 0.95rem;
+    font-weight: 590;
+    font-size: 1rem;
     text-decoration: none;
-    transition: background-color 0.15s ease, transform 0.05s ease;
+    animation: yodev-splash-cta 2.6s ease-in-out infinite;
+    transition: transform 0.06s ease, filter 0.15s ease;
 
     &:hover,
     &:focus {
-      background: #7170ff;
+      filter: brightness(1.08);
       color: #ffffff !important;
       text-decoration: none;
     }
     &:active {
-      transform: scale(0.98);
+      transform: scale(0.985);
     }
+  }
+
+  &__footnote {
+    margin: 12px 0 0;
+    font-size: 0.7rem;
+    color: #6f7488;
+    text-align: center;
   }
 
   &__continue {
     display: block;
-    margin: 14px auto 0;
+    margin: 10px auto 0;
     padding: 4px 8px;
     background: transparent;
     border: none;
-    color: rgba(244, 245, 251, 0.55);
+    color: rgba(244, 245, 251, 0.5);
     font-size: 0.8rem;
     font-family: inherit;
     cursor: pointer;
@@ -341,6 +480,32 @@
     &:focus {
       color: #ffffff;
       text-decoration: underline;
+    }
+  }
+
+  &__reveal {
+    animation: yodev-splash-reveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (max-width: 560px) {
+    &__content {
+      padding: 26px 20px 20px;
+    }
+    &__headline {
+      font-size: 1.5rem;
+    }
+    &__pillars {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yodev-beta-splash__backdrop,
+    .yodev-beta-splash__card,
+    .yodev-beta-splash__glow,
+    .yodev-beta-splash__cta,
+    .yodev-beta-splash__reveal {
+      animation: none !important;
     }
   }
 }

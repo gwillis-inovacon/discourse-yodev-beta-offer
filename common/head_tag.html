@@ -65,11 +65,27 @@
         memberCta: "Start now",
         signupTitle: "You’re getting Business — free for 3 months",
         signupBody: "Full access to Dev Marketplace + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
-        splashTitleAnon: "Get 3 months of Business — free",
-        splashTitleMember: "Your free Business beta is ready",
-        splashBodyAnon: "Full access to the Developer Marketplace + Workplace. No credit card. Reverts to Free after 3 months unless you upgrade.",
-        splashBodyMember: "Full access to the Developer Marketplace + Workplace is included with your account. Jump in.",
-        splashContinue: "Continue to the forum",
+        splashEyebrow: "The yoDEV beta is open",
+        splashHeadlineAnon: "3 months of Business — free",
+        splashHeadlineMember: "Your Business beta is active",
+        splashSubAnon: "No credit card. Full access to the entire yoDEV platform.",
+        splashSubMember: "Full platform access is already on your account — dive in.",
+        splashMarketTitle: "Developer Marketplace",
+        splashMarketTagline: "Find your next project — or your next hire.",
+        splashMarketItems: [
+          "Structured projects with clear scope",
+          "A collaborative workspace for every contract",
+          "Manage contracts & milestones end-to-end",
+        ],
+        splashWorkTitle: "yoDEV Workplace",
+        splashWorkTagline: "Docs, wikis & real-time collaboration.",
+        splashWorkItems: [
+          "Block-based docs, tables & whiteboards",
+          "Real-time collaboration with your team",
+          "AI copilot (Claude) built in",
+        ],
+        splashFootnote: "Reverts to Free after 3 months unless you upgrade · cancel anytime",
+        splashContinue: "Maybe later — continue to the forum",
       },
       es: {
         tag: "Beta limitada",
@@ -81,11 +97,27 @@
         memberCta: "Vamos",
         signupTitle: "Obtienes Business gratis por 3 meses",
         signupBody: "Acceso completo a Dev Marketplace + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
-        splashTitleAnon: "Obtén 3 meses de Business — gratis",
-        splashTitleMember: "Tu beta Business gratis está lista",
-        splashBodyAnon: "Acceso completo al Developer Marketplace + Workplace. Sin tarjeta. Vuelve a Free tras 3 meses, salvo que actualices.",
-        splashBodyMember: "El acceso completo al Developer Marketplace + Workplace está incluido en tu cuenta. Entra.",
-        splashContinue: "Continuar al foro",
+        splashEyebrow: "La beta de yoDEV está abierta",
+        splashHeadlineAnon: "3 meses de Business — gratis",
+        splashHeadlineMember: "Tu beta Business está activa",
+        splashSubAnon: "Sin tarjeta. Acceso completo a toda la plataforma yoDEV.",
+        splashSubMember: "El acceso completo ya está en tu cuenta — entra.",
+        splashMarketTitle: "Developer Marketplace",
+        splashMarketTagline: "Encuentra tu próximo proyecto — o tu próximo talento.",
+        splashMarketItems: [
+          "Proyectos estructurados con alcance claro",
+          "Un espacio colaborativo para cada contrato",
+          "Gestiona contratos e hitos de principio a fin",
+        ],
+        splashWorkTitle: "yoDEV Workplace",
+        splashWorkTagline: "Docs, wikis y colaboración en tiempo real.",
+        splashWorkItems: [
+          "Documentos por bloques, tablas y pizarras",
+          "Colaboración en tiempo real con tu equipo",
+          "Copiloto de IA (Claude) integrado",
+        ],
+        splashFootnote: "Vuelve a Free tras 3 meses, salvo que actualices · cancela cuando quieras",
+        splashContinue: "Quizás luego — continuar al foro",
       },
       pt: {
         tag: "Beta limitado",
@@ -97,11 +129,27 @@
         memberCta: "Vamos",
         signupTitle: "Você ganha Business grátis por 3 meses",
         signupBody: "Acesso completo ao Dev Marketplace + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
-        splashTitleAnon: "Ganhe 3 meses de Business — grátis",
-        splashTitleMember: "Seu beta Business grátis está pronto",
-        splashBodyAnon: "Acesso completo ao Developer Marketplace + Workplace. Sem cartão. Volta ao Free após 3 meses, a menos que faça upgrade.",
-        splashBodyMember: "O acesso completo ao Developer Marketplace + Workplace está incluído na sua conta. Entre.",
-        splashContinue: "Continuar para o fórum",
+        splashEyebrow: "O beta do yoDEV está aberto",
+        splashHeadlineAnon: "3 meses de Business — grátis",
+        splashHeadlineMember: "Seu beta Business está ativo",
+        splashSubAnon: "Sem cartão. Acesso completo a toda a plataforma yoDEV.",
+        splashSubMember: "O acesso completo já está na sua conta — entre.",
+        splashMarketTitle: "Developer Marketplace",
+        splashMarketTagline: "Encontre seu próximo projeto — ou seu próximo talento.",
+        splashMarketItems: [
+          "Projetos estruturados com escopo claro",
+          "Um espaço colaborativo para cada contrato",
+          "Gerencie contratos e marcos do início ao fim",
+        ],
+        splashWorkTitle: "yoDEV Workplace",
+        splashWorkTagline: "Docs, wikis e colaboração em tempo real.",
+        splashWorkItems: [
+          "Documentos em blocos, tabelas e quadros",
+          "Colaboração em tempo real com seu time",
+          "Copiloto de IA (Claude) integrado",
+        ],
+        splashFootnote: "Volta ao Free após 3 meses, a menos que faça upgrade · cancele quando quiser",
+        splashContinue: "Talvez depois — continuar para o fórum",
       },
     };
 
@@ -262,11 +310,87 @@
       return panel;
     }
 
-    // ─── Splash DOM builder (full-screen one-time takeover)
-    // onDismiss fires on ×, the "continue" link, the backdrop, OR the CTA click
-    // (clicking through still counts as seen — it must never reappear).
+    // ─── Splash DOM builder (full-screen one-time marketing takeover)
+    // Two-pillar layout (Marketplace + Workplace) with branded styling and a
+    // staggered entrance animation. onDismiss fires on ×, the "continue" link,
+    // the backdrop, OR the CTA click (clicking through still counts as seen).
 
-    function buildSplash(parts, ctaHref, onDismiss) {
+    var SVG_NS = "http://www.w3.org/2000/svg";
+
+    function svgIcon(paths, size) {
+      var svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "1.7");
+      svg.setAttribute("stroke-linecap", "round");
+      svg.setAttribute("stroke-linejoin", "round");
+      svg.setAttribute("width", size || 20);
+      svg.setAttribute("height", size || 20);
+      paths.forEach(function (d) {
+        var p = document.createElementNS(SVG_NS, "path");
+        p.setAttribute("d", d);
+        svg.appendChild(p);
+      });
+      return svg;
+    }
+
+    var ICON_BRIEFCASE = [
+      "M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z",
+      "M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2",
+    ];
+    var ICON_DOC = [
+      "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z",
+      "M14 2v6h6",
+      "M8 13h8",
+      "M8 17h5",
+    ];
+    var ICON_CHECK = ["M20 6 9 17l-5-5"];
+
+    function buildPillar(iconPaths, title, tagline, items) {
+      var pillar = document.createElement("div");
+      pillar.className = "yodev-beta-splash__pillar";
+
+      var head = document.createElement("div");
+      head.className = "yodev-beta-splash__pillar-head";
+
+      var ic = document.createElement("span");
+      ic.className = "yodev-beta-splash__pillar-icon";
+      ic.appendChild(svgIcon(iconPaths, 20));
+
+      var titles = document.createElement("div");
+      var t = document.createElement("div");
+      t.className = "yodev-beta-splash__pillar-title";
+      t.textContent = title;
+      var tg = document.createElement("div");
+      tg.className = "yodev-beta-splash__pillar-tagline";
+      tg.textContent = tagline;
+      titles.appendChild(t);
+      titles.appendChild(tg);
+
+      head.appendChild(ic);
+      head.appendChild(titles);
+
+      var ul = document.createElement("ul");
+      ul.className = "yodev-beta-splash__list";
+      items.forEach(function (text) {
+        var li = document.createElement("li");
+        var chk = document.createElement("span");
+        chk.className = "yodev-beta-splash__check";
+        chk.appendChild(svgIcon(ICON_CHECK, 14));
+        var sp = document.createElement("span");
+        sp.textContent = text;
+        li.appendChild(chk);
+        li.appendChild(sp);
+        ul.appendChild(li);
+      });
+
+      pillar.appendChild(head);
+      pillar.appendChild(ul);
+      return pillar;
+    }
+
+    function buildSplash(copy, isLoggedIn, ctaHref, onDismiss) {
       var overlay = document.createElement("div");
       overlay.className = "yodev-beta-splash";
       overlay.setAttribute("role", "dialog");
@@ -279,50 +403,99 @@
       var card = document.createElement("div");
       card.className = "yodev-beta-splash__card";
 
+      var glow = document.createElement("div");
+      glow.className = "yodev-beta-splash__glow";
+      card.appendChild(glow);
+
       var dismiss = document.createElement("button");
       dismiss.className = "yodev-beta-splash__dismiss";
       dismiss.setAttribute("aria-label", "Dismiss");
       dismiss.innerHTML = "&times;";
       dismiss.addEventListener("click", onDismiss, { once: true });
+      card.appendChild(dismiss);
 
-      var tag = document.createElement("span");
-      tag.className = "yodev-beta-splash__tag";
-      tag.textContent = parts.tag;
+      var content = document.createElement("div");
+      content.className = "yodev-beta-splash__content";
 
-      var title = document.createElement("h2");
-      title.className = "yodev-beta-splash__title";
-      title.textContent = parts.title;
+      var reveals = [];
 
-      var body = document.createElement("p");
-      body.className = "yodev-beta-splash__body";
-      body.textContent = parts.body;
+      // Eyebrow: {yo} logo + announcement pill
+      var eyebrow = document.createElement("div");
+      eyebrow.className = "yodev-beta-splash__eyebrow";
+      var logo = document.createElement("span");
+      logo.className = "yodev-beta-splash__logo";
+      logo.textContent = "{yo}";
+      var pill = document.createElement("span");
+      pill.className = "yodev-beta-splash__pill";
+      pill.textContent = copy.splashEyebrow;
+      eyebrow.appendChild(logo);
+      eyebrow.appendChild(pill);
+      content.appendChild(eyebrow);
+      reveals.push(eyebrow);
 
-      var hook = document.createElement("p");
-      hook.className = "yodev-beta-splash__hook";
-      hook.textContent = parts.hook;
+      var headline = document.createElement("h2");
+      headline.className = "yodev-beta-splash__headline";
+      headline.textContent = isLoggedIn
+        ? copy.splashHeadlineMember
+        : copy.splashHeadlineAnon;
+      content.appendChild(headline);
+      reveals.push(headline);
+
+      var sub = document.createElement("p");
+      sub.className = "yodev-beta-splash__sub";
+      sub.textContent = isLoggedIn ? copy.splashSubMember : copy.splashSubAnon;
+      content.appendChild(sub);
+      reveals.push(sub);
+
+      var pillars = document.createElement("div");
+      pillars.className = "yodev-beta-splash__pillars";
+      var p1 = buildPillar(
+        ICON_BRIEFCASE,
+        copy.splashMarketTitle,
+        copy.splashMarketTagline,
+        copy.splashMarketItems
+      );
+      var p2 = buildPillar(
+        ICON_DOC,
+        copy.splashWorkTitle,
+        copy.splashWorkTagline,
+        copy.splashWorkItems
+      );
+      pillars.appendChild(p1);
+      pillars.appendChild(p2);
+      content.appendChild(pillars);
+      reveals.push(p1);
+      reveals.push(p2);
 
       var cta = document.createElement("a");
       cta.className = "yodev-beta-splash__cta";
       cta.href = ctaHref;
-      cta.textContent = parts.cta;
-      // Mark seen before navigating away (localStorage write runs first).
+      cta.textContent = isLoggedIn ? copy.memberCta : copy.anonCta;
       cta.addEventListener("click", onDismiss, { once: true });
+      content.appendChild(cta);
+      reveals.push(cta);
+
+      var foot = document.createElement("p");
+      foot.className = "yodev-beta-splash__footnote";
+      foot.textContent = copy.splashFootnote;
+      content.appendChild(foot);
 
       var cont = document.createElement("button");
       cont.className = "yodev-beta-splash__continue";
-      cont.textContent = parts.continueLabel;
+      cont.textContent = copy.splashContinue;
       cont.addEventListener("click", onDismiss, { once: true });
+      content.appendChild(cont);
 
-      card.appendChild(dismiss);
-      card.appendChild(tag);
-      card.appendChild(title);
-      card.appendChild(body);
-      card.appendChild(hook);
-      card.appendChild(cta);
-      card.appendChild(cont);
-
+      card.appendChild(content);
       overlay.appendChild(backdrop);
       overlay.appendChild(card);
+
+      // Staggered entrance — each key block fades/rises in sequence.
+      reveals.forEach(function (el, i) {
+        el.classList.add("yodev-beta-splash__reveal");
+        el.style.animationDelay = 140 + i * 85 + "ms";
+      });
+
       return overlay;
     }
 
@@ -562,16 +735,8 @@
             if (splashDismissed) {
               console.log("[yodev-beta-offer] splash already dismissed; skipping");
             } else {
-              var splashParts = {
-                tag: copy.tag,
-                title: isLoggedIn ? copy.splashTitleMember : copy.splashTitleAnon,
-                body: isLoggedIn ? copy.splashBodyMember : copy.splashBodyAnon,
-                hook: copy.hook,
-                cta: isLoggedIn ? copy.memberCta : copy.anonCta,
-                continueLabel: copy.splashContinue,
-              };
               var splashDone = false;
-              var splashEl = buildSplash(splashParts, ctaHref, function () {
+              var splashEl = buildSplash(copy, isLoggedIn, ctaHref, function () {
                 if (splashDone) return;
                 splashDone = true;
                 console.log("[yodev-beta-offer] splash dismissed/clicked");
