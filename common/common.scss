@@ -241,6 +241,15 @@
     system-ui, "Segoe UI", Roboto, sans-serif;
   font-feature-settings: "cv01", "ss03";
 
+  // The Discourse forum theme styles h1–h6 in its own (mono) heading font.
+  // Our headlines use semantic <h2>/<h3>, so force Inter back on them with a
+  // selector more specific than the forum's bare `h2 {}` rule.
+  h1, h2, h3, h4 {
+    font-family: "Inter", "Inter Variable", "SF Pro Display", -apple-system,
+      system-ui, "Segoe UI", Roboto, sans-serif;
+    font-feature-settings: "cv01", "ss03";
+  }
+
   &__backdrop {
     position: absolute;
     inset: 0;
