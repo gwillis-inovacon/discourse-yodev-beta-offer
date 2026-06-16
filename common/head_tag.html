@@ -92,6 +92,24 @@
         splashBannerSub: "Get the full yoDEV platform — free for 90 days. No card required.",
         splashFootnote: "Reverts to Free after 90 days unless you upgrade · cancel anytime",
         splashContinue: "Maybe later — continue to the forum",
+        splashWorkTagline: "Docs, wikis & real-time collaboration for your whole team.",
+        splashWorkFeatures: [
+          "Block-based document creation (Docs, DB, Tables)",
+          "Unlimited workspaces (10 members per workspace)",
+          "Real-time collaboration with cursor presence",
+          "Invite colleagues and clients",
+          "Infinite canvas and whiteboard",
+          "AI copilot integration (Claude)",
+        ],
+        splashMarketTagline: "Find your next project — or your next hire.",
+        splashIntegrationsTitle: "Built into your workflow",
+        splashIntegrations: [
+          "Claude Code Integration",
+          "VS Code Extension",
+          "GitHub Integration",
+        ],
+        availAvailable: "Available",
+        availLimited: "Limited",
       },
       es: {
         tag: "Beta limitada",
@@ -130,6 +148,24 @@
         splashBannerSub: "Obtén toda la plataforma yoDEV — gratis por 90 días. Sin tarjeta.",
         splashFootnote: "Vuelve a Free tras 90 días, salvo que actualices · cancela cuando quieras",
         splashContinue: "Quizás luego — continuar al foro",
+        splashWorkTagline: "Docs, wikis y colaboración en tiempo real para todo tu equipo.",
+        splashWorkFeatures: [
+          "Creación de documentos basada en bloques (Docs, DB, Tablas)",
+          "Espacios de trabajo ilimitados (10 miembros por espacio)",
+          "Colaboración en tiempo real con presencia de cursor",
+          "Invita a colegas y clientes",
+          "Lienzo y pizarra infinitos",
+          "Integración de copiloto de IA (Claude)",
+        ],
+        splashMarketTagline: "Encuentra tu próximo proyecto — o tu próximo talento.",
+        splashIntegrationsTitle: "Integrado en tu flujo de trabajo",
+        splashIntegrations: [
+          "Integración con Claude Code",
+          "Extensión para VS Code",
+          "Integración con GitHub",
+        ],
+        availAvailable: "Disponible",
+        availLimited: "Limitado",
       },
       pt: {
         tag: "Beta limitado",
@@ -168,6 +204,24 @@
         splashBannerSub: "Tenha toda a plataforma yoDEV — grátis por 90 dias. Sem cartão.",
         splashFootnote: "Volta ao Free após 90 dias, a menos que faça upgrade · cancele quando quiser",
         splashContinue: "Talvez depois — continuar para o fórum",
+        splashWorkTagline: "Docs, wikis e colaboração em tempo real para todo o seu time.",
+        splashWorkFeatures: [
+          "Criação de documentos em blocos (Docs, DB, Tabelas)",
+          "Espaços de trabalho ilimitados (10 membros por espaço)",
+          "Colaboração em tempo real com presença de cursor",
+          "Convide colegas e clientes",
+          "Lousa e quadro infinitos",
+          "Integração de copiloto de IA (Claude)",
+        ],
+        splashMarketTagline: "Encontre seu próximo projeto — ou seu próximo talento.",
+        splashIntegrationsTitle: "Integrado ao seu fluxo de trabalho",
+        splashIntegrations: [
+          "Integração com Claude Code",
+          "Extensão para VS Code",
+          "Integração com GitHub",
+        ],
+        availAvailable: "Disponível",
+        availLimited: "Limitado",
       },
     };
 
@@ -328,12 +382,11 @@
       return panel;
     }
 
-    // ─── Splash DOM builder (homepage-style beta landing)
-    // Adapted from the beta_offer.html template: hero → product preview →
-    // two feature cards (For Employers / For Developers) → "ready to build"
-    // banner. Discourse-restricted: inline SVG (no Material Symbols), settings
-    // via CSS vars, styled in common.scss. onDismiss fires on ×, "continue",
-    // the backdrop, or any CTA click (clicking through still counts as seen).
+    // ─── Splash DOM builder (homepage-style beta landing) ────────────────────
+    // hero → Workplace (title + 6-feature card + screenshot + integrations) →
+    // Developer Marketplace (title + Employer/Developer cards + dev profile
+    // cards) → "ready to build" banner. Discourse-restricted: inline SVG, no
+    // CDNs. onDismiss fires on ×, "continue", the backdrop, or any CTA click.
 
     var SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -361,8 +414,88 @@
     ];
     var ICON_CODE = ["m16 18 6-6-6-6", "m8 6-6 6 6 6"];
     var ICON_CHECK = ["M20 6 9 17l-5-5"];
+    var ICON_TERMINAL = ["m4 17 6-6-6-6", "M12 19h8"];
+    var ICON_GITHUB = [
+      "M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 1 5 1 5 1c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 8c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4",
+      "M9 18c-4.51 2-5-2-7-2",
+    ];
+    var INT_ICONS = [ICON_TERMINAL, ICON_CODE, ICON_GITHUB];
 
-    // A feature card — icon, label, headline, description, benefit checklist.
+    // Sample dev profiles — identical to the marketplace landing teaser
+    // (frontend/src/content/landing-samples.ts).
+    var SAMPLE_DEVS = [
+      { name: "Pablo Martín", flag: "🇪🇸", headline: "Senior Full-Stack Engineer · React + Node", rating: 5.0, reviews: 42, rateMin: 45, rateMax: 70, avail: "available", skills: ["React", "Node.js", "TypeScript"], photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+      { name: "Luciana Gómez", flag: "🇦🇷", headline: "Frontend & UX Engineer · React + Design Systems", rating: 4.9, reviews: 87, rateMin: 50, rateMax: 80, avail: "limited", skills: ["React", "Next.js", "Tailwind"], photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+      { name: "Roberto Fernández", flag: "🇨🇱", headline: "Backend Engineer · Python + Go", rating: 4.9, reviews: 56, rateMin: 55, rateMax: 90, avail: "available", skills: ["Python", "Django", "Go"], photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop" },
+    ];
+
+    function buildSectionTitle(title, tagline) {
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__sectitle";
+      var h = document.createElement("h3");
+      h.className = "yodev-beta-splash__sectitle-h";
+      h.textContent = title;
+      wrap.appendChild(h);
+      if (tagline) {
+        var p = document.createElement("p");
+        p.className = "yodev-beta-splash__sectitle-sub";
+        p.textContent = tagline;
+        wrap.appendChild(p);
+      }
+      return wrap;
+    }
+
+    // Workplace 6-feature card — two columns (3 + 3).
+    function buildWorkFeatures(features) {
+      var card = document.createElement("div");
+      card.className = "yodev-beta-splash__workcard";
+      var grid = document.createElement("div");
+      grid.className = "yodev-beta-splash__workgrid";
+      features.forEach(function (text) {
+        var row = document.createElement("div");
+        row.className = "yodev-beta-splash__workfeat";
+        var chk = document.createElement("span");
+        chk.className = "yodev-beta-splash__check";
+        chk.appendChild(svgIcon(ICON_CHECK, 15));
+        var sp = document.createElement("span");
+        sp.textContent = text;
+        row.appendChild(chk);
+        row.appendChild(sp);
+        grid.appendChild(row);
+      });
+      card.appendChild(grid);
+      return card;
+    }
+
+    function buildIntegrations(title, items) {
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__integrations";
+      if (title) {
+        var h = document.createElement("div");
+        h.className = "yodev-beta-splash__int-title";
+        h.textContent = title;
+        wrap.appendChild(h);
+      }
+      var row = document.createElement("div");
+      row.className = "yodev-beta-splash__int-row";
+      items.forEach(function (label, i) {
+        var cell = document.createElement("div");
+        cell.className = "yodev-beta-splash__int-item";
+        var ic = document.createElement("span");
+        ic.className = "yodev-beta-splash__int-icon";
+        ic.appendChild(svgIcon(INT_ICONS[i % INT_ICONS.length], 18));
+        var lb = document.createElement("span");
+        lb.className = "yodev-beta-splash__int-label";
+        lb.textContent = label;
+        cell.appendChild(ic);
+        cell.appendChild(lb);
+        row.appendChild(cell);
+      });
+      wrap.appendChild(row);
+      return wrap;
+    }
+
+    // A marketplace feature card (For Employers / For Developers).
     function buildFeatureCard(iconPaths, label, headline, desc, items) {
       var card = document.createElement("div");
       card.className = "yodev-beta-splash__feature";
@@ -402,6 +535,83 @@
       });
       card.appendChild(ul);
       return card;
+    }
+
+    // A dev profile card matching the marketplace landing teaser.
+    function buildDevCard(dev, labels) {
+      var card = document.createElement("div");
+      card.className = "yodev-beta-splash__devcard";
+
+      var head = document.createElement("div");
+      head.className = "yodev-beta-splash__dev-head";
+
+      var ava = document.createElement("div");
+      ava.className = "yodev-beta-splash__dev-avatar";
+      var img = document.createElement("img");
+      img.src = dev.photo;
+      img.alt = dev.name;
+      img.setAttribute("referrerpolicy", "no-referrer");
+      ava.appendChild(img);
+      var dot = document.createElement("span");
+      dot.className =
+        "yodev-beta-splash__dev-dot " +
+        (dev.avail === "available" ? "is-available" : "is-limited");
+      ava.appendChild(dot);
+      head.appendChild(ava);
+
+      var idc = document.createElement("div");
+      idc.className = "yodev-beta-splash__dev-id";
+      var nm = document.createElement("div");
+      nm.className = "yodev-beta-splash__dev-name";
+      nm.textContent = dev.name + " " + dev.flag;
+      var rt = document.createElement("div");
+      rt.className = "yodev-beta-splash__dev-rating";
+      rt.textContent = "★ " + dev.rating.toFixed(1) + " (" + dev.reviews + ")";
+      idc.appendChild(nm);
+      idc.appendChild(rt);
+      head.appendChild(idc);
+      card.appendChild(head);
+
+      var hl = document.createElement("div");
+      hl.className = "yodev-beta-splash__dev-headline";
+      hl.textContent = dev.headline;
+      card.appendChild(hl);
+
+      var sk = document.createElement("div");
+      sk.className = "yodev-beta-splash__dev-skills";
+      dev.skills.forEach(function (s) {
+        var chip = document.createElement("span");
+        chip.className = "yodev-beta-splash__dev-skill";
+        chip.textContent = s;
+        sk.appendChild(chip);
+      });
+      card.appendChild(sk);
+
+      var foot = document.createElement("div");
+      foot.className = "yodev-beta-splash__dev-foot";
+      var rate = document.createElement("span");
+      rate.className = "yodev-beta-splash__dev-rate";
+      rate.textContent = "$" + dev.rateMin + "–" + dev.rateMax + "/hr";
+      var av = document.createElement("span");
+      av.className =
+        "yodev-beta-splash__dev-avail " +
+        (dev.avail === "available" ? "is-available" : "is-limited");
+      av.textContent = dev.avail === "available" ? labels.available : labels.limited;
+      foot.appendChild(rate);
+      foot.appendChild(av);
+      card.appendChild(foot);
+
+      return card;
+    }
+
+    function buildDevCards(copy) {
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__devcards";
+      var labels = { available: copy.availAvailable, limited: copy.availLimited };
+      SAMPLE_DEVS.forEach(function (d) {
+        wrap.appendChild(buildDevCard(d, labels));
+      });
+      return wrap;
     }
 
     // Browser-chrome frame around the real product screenshot.
@@ -482,11 +692,11 @@
       content.className = "yodev-beta-splash__content";
 
       var reveals = [];
+      function add(el) { content.appendChild(el); reveals.push(el); }
 
       // ── Hero ──
       var hero = document.createElement("div");
       hero.className = "yodev-beta-splash__hero";
-
       var eyebrow = document.createElement("div");
       eyebrow.className = "yodev-beta-splash__eyebrow";
       var logo = document.createElement("span");
@@ -498,56 +708,37 @@
       eyebrow.appendChild(logo);
       eyebrow.appendChild(pill);
       hero.appendChild(eyebrow);
-
       var headline = document.createElement("h2");
       headline.className = "yodev-beta-splash__headline";
-      headline.textContent = isLoggedIn
-        ? copy.splashHeadlineMember
-        : copy.splashHeadlineAnon;
+      headline.textContent = isLoggedIn ? copy.splashHeadlineMember : copy.splashHeadlineAnon;
       hero.appendChild(headline);
-
       var sub = document.createElement("p");
       sub.className = "yodev-beta-splash__sub";
       sub.textContent = isLoggedIn ? copy.splashSubMember : copy.splashSubAnon;
       hero.appendChild(sub);
-
       hero.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--hero", onDismiss));
-      content.appendChild(hero);
-      reveals.push(hero);
+      add(hero);
 
-      // ── Product preview (Workplace screenshot) ──
-      var preview = buildBrowserShot(
+      // ── Workplace ──
+      add(buildSectionTitle("Workplace", copy.splashWorkTagline));
+      add(buildWorkFeatures(copy.splashWorkFeatures));
+      add(buildBrowserShot(
         "workplace.yodev.dev",
         "https://yodev.dev/Doc_capture_2.png",
         "yoDEV Workplace document editor"
-      );
-      content.appendChild(preview);
-      reveals.push(preview);
+      ));
+      add(buildIntegrations(copy.splashIntegrationsTitle, copy.splashIntegrations));
 
-      // ── Feature cards: For Employers / For Developers ──
+      // ── Developer Marketplace ──
+      add(buildSectionTitle("Developer Marketplace", copy.splashMarketTagline));
       var cards = document.createElement("div");
       cards.className = "yodev-beta-splash__cards";
-      var emp = buildFeatureCard(
-        ICON_BRIEFCASE,
-        copy.empCardTitle,
-        copy.empCardHeadline,
-        copy.empCardDesc,
-        copy.empCardItems
-      );
-      var dev = buildFeatureCard(
-        ICON_CODE,
-        copy.devCardTitle,
-        copy.devCardHeadline,
-        copy.devCardDesc,
-        copy.devCardItems
-      );
-      cards.appendChild(emp);
-      cards.appendChild(dev);
-      content.appendChild(cards);
-      reveals.push(emp);
-      reveals.push(dev);
+      cards.appendChild(buildFeatureCard(ICON_BRIEFCASE, copy.empCardTitle, copy.empCardHeadline, copy.empCardDesc, copy.empCardItems));
+      cards.appendChild(buildFeatureCard(ICON_CODE, copy.devCardTitle, copy.devCardHeadline, copy.devCardDesc, copy.devCardItems));
+      add(cards);
+      add(buildDevCards(copy));
 
-      // ── "Ready to build" banner ──
+      // ── Banner ──
       var banner = document.createElement("div");
       banner.className = "yodev-beta-splash__banner";
       var btext = document.createElement("div");
@@ -561,15 +752,13 @@
       btext.appendChild(bs);
       banner.appendChild(btext);
       banner.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--banner", onDismiss));
-      content.appendChild(banner);
-      reveals.push(banner);
+      add(banner);
 
-      // ── Footnote + dismiss link ──
+      // ── Footer bits ──
       var foot = document.createElement("p");
       foot.className = "yodev-beta-splash__footnote";
       foot.textContent = copy.splashFootnote;
       content.appendChild(foot);
-
       var cont = document.createElement("button");
       cont.className = "yodev-beta-splash__continue";
       cont.textContent = copy.splashContinue;
@@ -582,7 +771,7 @@
 
       reveals.forEach(function (el, i) {
         el.classList.add("yodev-beta-splash__reveal");
-        el.style.animationDelay = 120 + i * 80 + "ms";
+        el.style.animationDelay = 110 + i * 70 + "ms";
       });
 
       return overlay;

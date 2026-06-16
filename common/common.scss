@@ -629,9 +629,203 @@
     animation: yodev-splash-reveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  // ── Section title (Workplace / Developer Marketplace) ──
+  &__sectitle {
+    text-align: center;
+    margin: 8px 0 16px;
+  }
+  &__sectitle-h {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 590;
+    letter-spacing: -0.02em;
+    color: #f7f8f8;
+  }
+  &__sectitle-sub {
+    margin: 4px 0 0;
+    font-size: 0.82rem;
+    color: #8a8f98;
+  }
+
+  // ── Workplace 6-feature card (two columns) ──
+  &__workcard {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  &__workgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 22px;
+  }
+  &__workfeat {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #d0d6e0;
+    text-align: left;
+  }
+
+  // ── Integrations row ──
+  &__integrations {
+    margin: 16px 0 4px;
+  }
+  &__int-title {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.66rem;
+    font-weight: 510;
+    color: #62666d;
+    margin-bottom: 12px;
+  }
+  &__int-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  &__int-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1 1 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 11px 8px;
+  }
+  &__int-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: #9aa2ff;
+  }
+  &__int-label {
+    font-size: 0.78rem;
+    font-weight: 510;
+    color: #d0d6e0;
+    white-space: nowrap;
+  }
+
+  // ── Dev profile cards (marketplace teaser) ──
+  &__devcards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 4px 0;
+  }
+  &__devcard {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: left;
+  }
+  &__dev-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  &__dev-avatar {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(94, 106, 210, 0.35);
+    }
+  }
+  &__dev-dot {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 2px solid #0f1011;
+
+    &.is-available { background: #27a644; }
+    &.is-limited { background: #f5bf4f; }
+  }
+  &__dev-id { min-width: 0; }
+  &__dev-name {
+    font-size: 0.85rem;
+    font-weight: 590;
+    color: #f7f8f8;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &__dev-rating {
+    font-size: 0.72rem;
+    color: #ffb867;
+    margin-top: 2px;
+  }
+  &__dev-headline {
+    font-size: 0.74rem;
+    line-height: 1.35;
+    color: #8a8f98;
+    margin-bottom: 10px;
+    min-height: 2.4em;
+  }
+  &__dev-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  &__dev-skill {
+    font-size: 0.64rem;
+    font-weight: 510;
+    color: #c7ccff;
+    background: rgba(94, 106, 210, 0.14);
+    border: 1px solid rgba(94, 106, 210, 0.28);
+    border-radius: 5px;
+    padding: 2px 7px;
+  }
+  &__dev-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  &__dev-rate {
+    font-size: 0.78rem;
+    font-weight: 590;
+    color: #f7f8f8;
+  }
+  &__dev-avail {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 999px;
+
+    &.is-available { color: #6ee7a0; background: rgba(39, 166, 68, 0.16); }
+    &.is-limited { color: #ffd591; background: rgba(245, 191, 79, 0.16); }
+  }
+
   @media (max-width: 640px) {
     &__content { padding: 26px 20px 20px; }
     &__cards { grid-template-columns: 1fr; }
+    &__workgrid { grid-template-columns: 1fr; }
+    &__int-row { flex-wrap: wrap; }
+    &__int-item { flex-basis: 100%; }
+    &__devcards { grid-template-columns: 1fr; }
     &__banner {
       flex-direction: column;
       align-items: stretch;
