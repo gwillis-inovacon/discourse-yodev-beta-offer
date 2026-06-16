@@ -342,18 +342,18 @@
   }
 
   &__pill {
+    // DESIGN.md: Inter (510) for eyebrows/labels — mono is reserved for code.
     display: inline-flex;
     align-items: center;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     font-size: 0.625rem;
-    font-weight: 500;
-    font-family: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 510;
     padding: 5px 12px;
     border-radius: 999px;
-    color: #d0d6e0;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.02);
+    color: #c7ccff;
+    border: 1px solid rgba(94, 106, 210, 0.45);
+    background: rgba(94, 106, 210, 0.18);
     animation: yodev-splash-pill 2.8s ease-in-out infinite;
   }
 
@@ -362,7 +362,7 @@
     max-width: 540px;
     font-size: clamp(1.6rem, 5vw, 2.1rem);
     line-height: 1.12;
-    font-weight: 590;
+    font-weight: 510; // DESIGN.md signature display weight
     letter-spacing: -0.03em;
     color: #f7f8f8;
   }
@@ -470,6 +470,9 @@
     display: block;
     width: 100%;
     height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: top center;
   }
 
   // ── Feature cards ──
