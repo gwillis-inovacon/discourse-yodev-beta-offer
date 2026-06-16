@@ -86,6 +86,12 @@
         ],
         splashFootnote: "Reverts to Free after 3 months unless you upgrade · cancel anytime",
         splashContinue: "Maybe later — continue to the forum",
+        splashMockEyebrow: "Open project",
+        splashMockTitle: "Checkout API integration",
+        splashMockMeta: "Remote · Fixed price",
+        splashMockBudgetLabel: "Budget",
+        splashMockMilestone: "Milestone 2 of 4",
+        splashIntegrationsTitle: "Built into your workflow",
       },
       es: {
         tag: "Beta limitada",
@@ -118,6 +124,12 @@
         ],
         splashFootnote: "Vuelve a Free tras 3 meses, salvo que actualices · cancela cuando quieras",
         splashContinue: "Quizás luego — continuar al foro",
+        splashMockEyebrow: "Proyecto abierto",
+        splashMockTitle: "Integración de API de pagos",
+        splashMockMeta: "Remoto · Precio fijo",
+        splashMockBudgetLabel: "Presupuesto",
+        splashMockMilestone: "Hito 2 de 4",
+        splashIntegrationsTitle: "Integrado en tu flujo de trabajo",
       },
       pt: {
         tag: "Beta limitado",
@@ -150,6 +162,12 @@
         ],
         splashFootnote: "Volta ao Free após 3 meses, a menos que faça upgrade · cancele quando quiser",
         splashContinue: "Talvez depois — continuar para o fórum",
+        splashMockEyebrow: "Projeto aberto",
+        splashMockTitle: "Integração de API de pagamentos",
+        splashMockMeta: "Remoto · Preço fixo",
+        splashMockBudgetLabel: "Orçamento",
+        splashMockMilestone: "Marco 2 de 4",
+        splashIntegrationsTitle: "Integrado ao seu fluxo de trabalho",
       },
     };
 
@@ -310,10 +328,11 @@
       return panel;
     }
 
-    // ─── Splash DOM builder (full-screen one-time marketing takeover)
-    // Two-pillar layout (Marketplace + Workplace) with branded styling and a
-    // staggered entrance animation. onDismiss fires on ×, the "continue" link,
-    // the backdrop, OR the CTA click (clicking through still counts as seen).
+    // ─── Splash DOM builder (mini-homepage marketing takeover)
+    // Scrollable landing: hero → Marketplace (with a faux project-card mockup)
+    // → Workplace (with the real product screenshot in a browser frame) →
+    // integrations strip → CTA. onDismiss fires on ×, "continue", backdrop, or
+    // the CTA click (clicking through still counts as seen).
 
     var SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -346,30 +365,35 @@
       "M8 17h5",
     ];
     var ICON_CHECK = ["M20 6 9 17l-5-5"];
+    var ICON_TERMINAL = ["m4 17 6-6-6-6", "M12 19h8"];
+    var ICON_CODE = ["m16 18 6-6-6-6", "m8 6-6 6 6 6"];
+    var ICON_GITHUB = [
+      "M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 1 5 1 5 1c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 8c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4",
+      "M9 18c-4.51 2-5-2-7-2",
+    ];
 
-    function buildPillar(iconPaths, title, tagline, items) {
-      var pillar = document.createElement("div");
-      pillar.className = "yodev-beta-splash__pillar";
+    // App section: icon + title + tagline, a benefit list, and a visual below.
+    function buildAppSection(iconPaths, title, tagline, items, visualEl) {
+      var sec = document.createElement("div");
+      sec.className = "yodev-beta-splash__section";
 
       var head = document.createElement("div");
-      head.className = "yodev-beta-splash__pillar-head";
-
+      head.className = "yodev-beta-splash__sec-head";
       var ic = document.createElement("span");
-      ic.className = "yodev-beta-splash__pillar-icon";
+      ic.className = "yodev-beta-splash__sec-icon";
       ic.appendChild(svgIcon(iconPaths, 20));
-
       var titles = document.createElement("div");
       var t = document.createElement("div");
-      t.className = "yodev-beta-splash__pillar-title";
+      t.className = "yodev-beta-splash__sec-title";
       t.textContent = title;
       var tg = document.createElement("div");
-      tg.className = "yodev-beta-splash__pillar-tagline";
+      tg.className = "yodev-beta-splash__sec-tagline";
       tg.textContent = tagline;
       titles.appendChild(t);
       titles.appendChild(tg);
-
       head.appendChild(ic);
       head.appendChild(titles);
+      sec.appendChild(head);
 
       var ul = document.createElement("ul");
       ul.className = "yodev-beta-splash__list";
@@ -384,10 +408,136 @@
         li.appendChild(sp);
         ul.appendChild(li);
       });
+      sec.appendChild(ul);
 
-      pillar.appendChild(head);
-      pillar.appendChild(ul);
-      return pillar;
+      if (visualEl) sec.appendChild(visualEl);
+      return sec;
+    }
+
+    // Faux "open project" card — shows what the Marketplace is at a glance.
+    function buildMockProject(copy) {
+      var card = document.createElement("div");
+      card.className = "yodev-beta-splash__mock";
+
+      var eb = document.createElement("span");
+      eb.className = "yodev-beta-splash__mock-eyebrow";
+      eb.textContent = copy.splashMockEyebrow;
+
+      var title = document.createElement("div");
+      title.className = "yodev-beta-splash__mock-title";
+      title.textContent = copy.splashMockTitle;
+
+      var meta = document.createElement("div");
+      meta.className = "yodev-beta-splash__mock-meta";
+      meta.textContent = copy.splashMockMeta;
+
+      var tags = document.createElement("div");
+      tags.className = "yodev-beta-splash__mock-tags";
+      ["React", "Node.js", "Stripe"].forEach(function (name) {
+        var tg = document.createElement("span");
+        tg.className = "yodev-beta-splash__mock-tag";
+        tg.textContent = name;
+        tags.appendChild(tg);
+      });
+
+      var foot = document.createElement("div");
+      foot.className = "yodev-beta-splash__mock-foot";
+
+      var budget = document.createElement("div");
+      budget.className = "yodev-beta-splash__mock-budget";
+      var bl = document.createElement("span");
+      bl.className = "yodev-beta-splash__mock-budget-label";
+      bl.textContent = copy.splashMockBudgetLabel;
+      var bv = document.createElement("span");
+      bv.className = "yodev-beta-splash__mock-budget-value";
+      bv.textContent = "$4,500";
+      budget.appendChild(bl);
+      budget.appendChild(bv);
+
+      var ms = document.createElement("div");
+      ms.className = "yodev-beta-splash__mock-ms";
+      var msl = document.createElement("span");
+      msl.className = "yodev-beta-splash__mock-ms-label";
+      msl.textContent = copy.splashMockMilestone;
+      var bar = document.createElement("span");
+      bar.className = "yodev-beta-splash__mock-bar";
+      var fill = document.createElement("span");
+      fill.className = "yodev-beta-splash__mock-bar-fill";
+      bar.appendChild(fill);
+      ms.appendChild(msl);
+      ms.appendChild(bar);
+
+      foot.appendChild(budget);
+      foot.appendChild(ms);
+
+      card.appendChild(eb);
+      card.appendChild(title);
+      card.appendChild(meta);
+      card.appendChild(tags);
+      card.appendChild(foot);
+      return card;
+    }
+
+    // Browser-chrome frame around a real product screenshot.
+    function buildBrowserShot(url, imgSrc, alt) {
+      var frame = document.createElement("div");
+      frame.className = "yodev-beta-splash__browser";
+
+      var bar = document.createElement("div");
+      bar.className = "yodev-beta-splash__browser-bar";
+      var dots = document.createElement("span");
+      dots.className = "yodev-beta-splash__browser-dots";
+      ["d1", "d2", "d3"].forEach(function (c) {
+        var d = document.createElement("span");
+        d.className = "yodev-beta-splash__browser-dot " + c;
+        dots.appendChild(d);
+      });
+      var addr = document.createElement("span");
+      addr.className = "yodev-beta-splash__browser-url";
+      addr.textContent = url;
+      bar.appendChild(dots);
+      bar.appendChild(addr);
+
+      var img = document.createElement("img");
+      img.className = "yodev-beta-splash__browser-img";
+      img.src = imgSrc;
+      img.alt = alt;
+      img.loading = "lazy";
+      img.setAttribute("referrerpolicy", "no-referrer");
+
+      frame.appendChild(bar);
+      frame.appendChild(img);
+      return frame;
+    }
+
+    function buildIntegrations(title) {
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__integrations";
+      var h = document.createElement("div");
+      h.className = "yodev-beta-splash__int-title";
+      h.textContent = title;
+      var row = document.createElement("div");
+      row.className = "yodev-beta-splash__int-row";
+      [
+        { name: "Claude Code", icon: ICON_TERMINAL },
+        { name: "VS Code", icon: ICON_CODE },
+        { name: "GitHub", icon: ICON_GITHUB },
+      ].forEach(function (it) {
+        var cell = document.createElement("div");
+        cell.className = "yodev-beta-splash__int-item";
+        var ic = document.createElement("span");
+        ic.className = "yodev-beta-splash__int-icon";
+        ic.appendChild(svgIcon(it.icon, 18));
+        var lb = document.createElement("span");
+        lb.className = "yodev-beta-splash__int-label";
+        lb.textContent = it.name;
+        cell.appendChild(ic);
+        cell.appendChild(lb);
+        row.appendChild(cell);
+      });
+      wrap.appendChild(h);
+      wrap.appendChild(row);
+      return wrap;
     }
 
     function buildSplash(copy, isLoggedIn, ctaHref, onDismiss) {
@@ -419,7 +569,7 @@
 
       var reveals = [];
 
-      // Eyebrow: {yo} logo + announcement pill
+      // Hero — {yo} logo + pill, headline, sub
       var eyebrow = document.createElement("div");
       eyebrow.className = "yodev-beta-splash__eyebrow";
       var logo = document.createElement("span");
@@ -447,26 +597,38 @@
       content.appendChild(sub);
       reveals.push(sub);
 
-      var pillars = document.createElement("div");
-      pillars.className = "yodev-beta-splash__pillars";
-      var p1 = buildPillar(
+      // Marketplace section (faux project card)
+      var market = buildAppSection(
         ICON_BRIEFCASE,
         copy.splashMarketTitle,
         copy.splashMarketTagline,
-        copy.splashMarketItems
+        copy.splashMarketItems,
+        buildMockProject(copy)
       );
-      var p2 = buildPillar(
+      content.appendChild(market);
+      reveals.push(market);
+
+      // Workplace section (real screenshot in a browser frame)
+      var work = buildAppSection(
         ICON_DOC,
         copy.splashWorkTitle,
         copy.splashWorkTagline,
-        copy.splashWorkItems
+        copy.splashWorkItems,
+        buildBrowserShot(
+          "workplace.yodev.dev",
+          "https://yodev.dev/Workplace_doc_image.png",
+          "yoDEV Workplace document editor"
+        )
       );
-      pillars.appendChild(p1);
-      pillars.appendChild(p2);
-      content.appendChild(pillars);
-      reveals.push(p1);
-      reveals.push(p2);
+      content.appendChild(work);
+      reveals.push(work);
 
+      // Integrations strip
+      var integrations = buildIntegrations(copy.splashIntegrationsTitle);
+      content.appendChild(integrations);
+      reveals.push(integrations);
+
+      // CTA
       var cta = document.createElement("a");
       cta.className = "yodev-beta-splash__cta";
       cta.href = ctaHref;
@@ -490,7 +652,7 @@
       overlay.appendChild(backdrop);
       overlay.appendChild(card);
 
-      // Staggered entrance — each key block fades/rises in sequence.
+      // Staggered entrance — each block fades/rises in sequence.
       reveals.forEach(function (el, i) {
         el.classList.add("yodev-beta-splash__reveal");
         el.style.animationDelay = 140 + i * 85 + "ms";

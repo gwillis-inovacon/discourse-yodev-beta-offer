@@ -362,30 +362,20 @@
     color: #8a8f98; // DESIGN tertiary text
   }
 
-  &__pillars {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-
-  &__pillar {
+  // ── App section (Marketplace / Workplace) ──
+  &__section {
     text-align: left;
-    // DESIGN: cards are translucent white, never solid; 12px featured radius.
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 16px 16px 14px;
+    margin-bottom: 22px;
   }
 
-  &__pillar-head {
+  &__sec-head {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
   }
 
-  &__pillar-icon {
+  &__sec-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -398,17 +388,224 @@
     border: 1px solid rgba(94, 106, 210, 0.3);
   }
 
-  &__pillar-title {
-    font-size: 0.92rem;
+  &__sec-title {
+    font-size: 1.02rem;
     font-weight: 590;
-    color: #f7f8f8; // DESIGN primary text
+    color: #f7f8f8;
     line-height: 1.2;
+    letter-spacing: -0.24px;
   }
 
-  &__pillar-tagline {
-    font-size: 0.72rem;
+  &__sec-tagline {
+    font-size: 0.78rem;
     color: #8a8f98;
     margin-top: 2px;
+  }
+
+  // ── Marketplace faux "open project" card ──
+  &__mock {
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  &__mock-eyebrow {
+    display: inline-flex;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #9aa2ff;
+    background: rgba(94, 106, 210, 0.16);
+    border: 1px solid rgba(94, 106, 210, 0.3);
+    border-radius: 999px;
+    padding: 3px 9px;
+    margin-bottom: 10px;
+  }
+
+  &__mock-title {
+    font-size: 0.98rem;
+    font-weight: 590;
+    color: #f7f8f8;
+    line-height: 1.25;
+  }
+
+  &__mock-meta {
+    font-size: 0.72rem;
+    color: #8a8f98;
+    margin-top: 3px;
+  }
+
+  &__mock-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+  }
+
+  &__mock-tag {
+    font-size: 0.68rem;
+    font-weight: 510;
+    color: #d0d6e0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
+
+  &__mock-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  &__mock-budget {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__mock-budget-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #62666d;
+  }
+
+  &__mock-budget-value {
+    font-size: 1rem;
+    font-weight: 590;
+    color: #f7f8f8;
+  }
+
+  &__mock-ms {
+    flex: 1 1 auto;
+    max-width: 210px;
+    text-align: right;
+  }
+
+  &__mock-ms-label {
+    display: block;
+    font-size: 0.68rem;
+    color: #8a8f98;
+    margin-bottom: 6px;
+  }
+
+  &__mock-bar {
+    display: block;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+
+  &__mock-bar-fill {
+    display: block;
+    width: 50%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #5e6ad2, #7170ff);
+  }
+
+  // ── Workplace browser-chrome screenshot ──
+  &__browser {
+    margin-top: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  &__browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  &__browser-dots {
+    display: inline-flex;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  &__browser-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+
+    &.d1 { background: rgba(237, 106, 94, 0.55); }
+    &.d2 { background: rgba(245, 191, 79, 0.55); }
+    &.d3 { background: rgba(39, 166, 68, 0.55); }
+  }
+
+  &__browser-url {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 0.68rem;
+    color: #62666d;
+    font-family: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__browser-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // ── Integrations strip ──
+  &__integrations {
+    margin-bottom: 26px;
+  }
+
+  &__int-title {
+    text-align: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #62666d;
+    margin-bottom: 12px;
+  }
+
+  &__int-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  &__int-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 1 1 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 9px 6px;
+  }
+
+  &__int-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: #9aa2ff;
+  }
+
+  &__int-label {
+    font-size: 0.74rem;
+    font-weight: 510;
+    color: #d0d6e0;
+    white-space: nowrap;
   }
 
   &__list {
@@ -501,8 +698,20 @@
     &__headline {
       font-size: 1.5rem;
     }
-    &__pillars {
-      grid-template-columns: 1fr;
+    &__mock-foot {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    &__mock-ms {
+      max-width: none;
+      flex-basis: 100%;
+      text-align: left;
+    }
+    &__int-row {
+      flex-wrap: wrap;
+    }
+    &__int-item {
+      flex-basis: calc(50% - 5px);
     }
   }
 
