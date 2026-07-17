@@ -1,3 +1,3 @@
 en:
   theme_metadata:
-    description: "Site-wide auth-aware Beta Offer surfaces promoting the free 3-month Business beta: a dismissable top banner, a signup-page panel, and an optional one-time full-screen splash (anon + members). Dismissals persist cross-device for members via user fields."
+    description: "Site-wide auth-aware launch-offer surfaces: a dismissable top banner, a signup-page panel, and an optional one-time full-screen splash (anon + members). Anonymous visitors see the 90-day Business launch offer; logged-in members see their active-Business state (no expiry). Dismissals persist cross-device for members via user fields."
