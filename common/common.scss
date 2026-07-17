@@ -19,122 +19,154 @@
 //   Row 3 — developer hook (full width)
 // Dismiss × is anchored to the top-right corner.
 
-.yodev-beta-banner {
-  container-type: inline-size; // reflow on the banner's OWN width, not the viewport
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  background: linear-gradient(120deg, #191a28 0%, #111220 100%);
-  border-bottom: 1px solid rgba(94, 106, 210, 0.35);
-  box-shadow: inset 0 2px 0 0 rgba(113, 112, 255, 0.55); // thin top accent glow
-  color: #f4f5fb;
-  font-family: inherit;
+// Promotional card. Self-contained lavender/navy palette so it reads as a distinct
+// promo on any forum theme. Geist display + Inter body (loaded in head_tag). The
+// headline forces color/case/font with !important because a Discourse theme rule
+// was observed washing it to muted/uppercase.
+$yb-font-display: "Geist", "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+$yb-font-body: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+$yb-primary: #c3c0ff;
 
-  &__inner {
-    max-width: 1080px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 26px;
-    padding: 13px 50px 13px 24px; // extra right padding clears the corner dismiss
+.yodev-beta-banner {
+  container-type: inline-size; // reflow on the card's OWN width, not the viewport
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 12px 0;
+  background: linear-gradient(135deg, rgba(28, 43, 60, 0.82) 0%, rgba(13, 28, 45, 0.9) 100%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid #464555;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  color: #d4e4fa;
+  font-family: $yb-font-body;
+
+  // Atmospheric glow, top-right
+  &::before {
+    content: "";
+    position: absolute;
+    top: -96px;
+    right: -96px;
+    width: 192px;
+    height: 192px;
+    border-radius: 9999px;
+    background: $yb-primary;
+    opacity: 0.1;
+    filter: blur(80px);
+    pointer-events: none;
   }
 
-  // Text column — accent eyebrow + headline, then a muted detail line.
-  &__text {
-    flex: 1 1 320px;
-    min-width: 0;
+  &__content {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 20px;
   }
 
-  &__row1 {
+  &__lead {
     display: flex;
-    align-items: baseline;
-    gap: 9px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 6px;
   }
 
   &__eyebrow {
-    flex-shrink: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    font-size: 0.62rem;
+    font-family: $yb-font-display !important;
+    font-size: 12px;
     font-weight: 700;
-    color: #8f97ff;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $yb-primary;
   }
 
   &__headline {
-    font-size: 0.97rem;
-    font-weight: 590;
-    color: #f7f8fc;
-    line-height: 1.3;
+    // !important defends against a theme heading rule that washed this to
+    // muted/uppercase; the offer line must stay bright, mixed-case, and Geist.
+    font-family: $yb-font-display !important;
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: none !important;
+    color: #ffffff !important;
   }
 
   &__sub {
-    font-size: 0.8rem;
-    color: #9096ad;
-    line-height: 1.35;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #c7c4d8;
+
+    b {
+      color: $yb-primary;
+      font-weight: 600;
+    }
   }
 
   &__cta {
-    flex: 0 0 auto;
-    margin-left: auto; // pin right when inline
+    align-self: flex-start;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 9px 20px;
-    border-radius: 8px;
-    background: #5e6ad2;
-    // !important: Discourse core link styles override an <a> colour otherwise,
-    // which made the CTA text invisible until :hover (only the hover rule won).
-    color: #ffffff !important;
-    font-weight: 560;
-    font-size: 0.85rem;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(180deg, #c3c0ff 0%, #a3a0e6 100%);
+    // !important: Discourse core link styles override an <a> colour otherwise.
+    color: #1d00a5 !important;
+    font-family: $yb-font-display !important;
+    font-size: 15px;
+    font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset,
-      0 6px 16px -6px rgba(94, 106, 210, 0.7);
-    transition: background-color 0.15s ease, transform 0.05s ease;
+    box-shadow: 0 0 0 1px rgba(195, 192, 255, 0.4),
+      0 8px 24px -8px rgba(163, 160, 230, 0.75);
+    transition: filter 0.15s ease, transform 0.05s ease;
 
     &:hover,
     &:focus {
-      background: #7170ff;
-      color: #ffffff !important;
+      filter: brightness(1.06);
+      color: #1d00a5 !important;
       text-decoration: none;
     }
     &:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
   }
 
   &__arrow {
-    opacity: 0.8;
+    font-size: 17px;
+    line-height: 1;
   }
 
-  // Member variant — the entitled state reads "active", not an offer.
+  // Member variant — the entitled state, not an offer: green accent.
   &--member &__eyebrow {
-    color: #5ec98f;
+    color: #5ee0a0;
+  }
+  &--member::before {
+    background: #5ee0a0;
   }
 
   &__dismiss {
     position: absolute;
-    top: 9px;
-    right: 12px;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
-    color: rgba(244, 245, 251, 0.45);
-    font-size: 1.2rem;
+    color: #c7c4d8;
+    font-size: 1.35rem;
     line-height: 1;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -142,27 +174,15 @@
     &:hover,
     &:focus {
       background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
+      color: #d4e4fa;
     }
   }
 
-  // Reflow on the banner's OWN width (it lives in the constrained #main-outlet
-  // column, so a viewport media query is the wrong tool). Below ~700px of banner
-  // width the CTA stacks full-width under the text.
-  @container (max-width: 700px) {
-    &__inner {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 11px;
-      padding: 14px 40px 15px 18px;
-    }
-    &__text {
-      flex: 0 0 auto; // row-mode basis is a WIDTH; in column it'd become a height
-    }
+  // Narrow content column → CTA spans full width (mirrors the mockup's w-full sm:w-auto).
+  @container (max-width: 520px) {
     &__cta {
-      margin-left: 0;
+      align-self: stretch;
       width: 100%;
-      justify-content: center;
     }
   }
 }

@@ -1,3 +1,9 @@
+<!-- yoDEV launch-offer typeface (design spec: Geist display + Inter body). Loaded
+     here so the promo card reads in its own type regardless of the forum theme.
+     If the forum CSP blocks Google Fonts, the card falls back to the theme font. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
   (function () {
     // yoDEV Beta Offer — site-wide auth-aware banner + signup-page panel.
@@ -309,42 +315,61 @@
 
     // ─── Banner DOM builder
 
+    // Build the sub line with the brand tokens (worX / Workplace) accented,
+    // using DOM nodes (never innerHTML) so it's injection-safe across locales.
+    function buildSubWithBrands(textStr) {
+      var frag = document.createDocumentFragment();
+      var pieces = String(textStr).split(/(worX|Workplace)/);
+      for (var i = 0; i < pieces.length; i++) {
+        if (pieces[i] === "worX" || pieces[i] === "Workplace") {
+          var b = document.createElement("b");
+          b.textContent = pieces[i];
+          frag.appendChild(b);
+        } else if (pieces[i]) {
+          frag.appendChild(document.createTextNode(pieces[i]));
+        }
+      }
+      return frag;
+    }
+
     function buildBanner(parts, ctaHref, onDismiss) {
-      // Editorial offer band: a text column (accent eyebrow + headline, then a
-      // muted detail line) with the CTA pinned right. Reflows on the banner's OWN
-      // width via a container query (it lives in #main-outlet, not full-width), so
-      // the CTA stacks full-width below the text on a narrow content column.
+      // Promotional card: accent eyebrow + bright headline, a muted detail line,
+      // then a gradient CTA. Glass surface with an atmospheric glow. Reflows on the
+      // card's OWN width via a container query (it lives in #main-outlet, not
+      // full-width) — the CTA goes full-width when the column is narrow.
       var banner = document.createElement("div");
       banner.className =
         "yodev-beta-banner" + (parts.member ? " yodev-beta-banner--member" : "");
 
-      var inner = document.createElement("div");
-      inner.className = "yodev-beta-banner__inner";
+      // Dismiss — anchored top-right of the card
+      var dismiss = document.createElement("button");
+      dismiss.className = "yodev-beta-banner__dismiss";
+      dismiss.setAttribute("aria-label", "Dismiss");
+      dismiss.innerHTML = "&times;";
+      dismiss.addEventListener("click", onDismiss, { once: true });
 
-      // Text column
-      var text = document.createElement("div");
-      text.className = "yodev-beta-banner__text";
+      var content = document.createElement("div");
+      content.className = "yodev-beta-banner__content";
 
-      var row1 = document.createElement("div");
-      row1.className = "yodev-beta-banner__row1";
+      var lead = document.createElement("div");
+      lead.className = "yodev-beta-banner__lead";
 
       var eyebrow = document.createElement("span");
       eyebrow.className = "yodev-beta-banner__eyebrow";
       eyebrow.textContent = parts.tag;
 
-      var headline = document.createElement("span");
+      // <div>, NOT <h2>: Discourse themes style headings, and an h2 rule was
+      // observed washing the headline to muted/uppercase. A div + own class avoids it.
+      var headline = document.createElement("div");
       headline.className = "yodev-beta-banner__headline";
       headline.textContent = parts.headline;
 
-      row1.appendChild(eyebrow);
-      row1.appendChild(headline);
+      lead.appendChild(eyebrow);
+      lead.appendChild(headline);
 
-      var sub = document.createElement("div");
+      var sub = document.createElement("p");
       sub.className = "yodev-beta-banner__sub";
-      sub.textContent = parts.sub;
-
-      text.appendChild(row1);
-      text.appendChild(sub);
+      sub.appendChild(buildSubWithBrands(parts.sub));
 
       // CTA — first-party app URL, same tab
       var cta = document.createElement("a");
@@ -359,18 +384,12 @@
       cta.appendChild(ctaLabel);
       cta.appendChild(arrow);
 
-      inner.appendChild(text);
-      inner.appendChild(cta);
+      content.appendChild(lead);
+      content.appendChild(sub);
+      content.appendChild(cta);
 
-      // Dismiss — anchored top-right of the banner
-      var dismiss = document.createElement("button");
-      dismiss.className = "yodev-beta-banner__dismiss";
-      dismiss.setAttribute("aria-label", "Dismiss");
-      dismiss.innerHTML = "&times;";
-      dismiss.addEventListener("click", onDismiss, { once: true });
-
-      banner.appendChild(inner);
       banner.appendChild(dismiss);
+      banner.appendChild(content);
       return banner;
     }
 
