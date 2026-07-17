@@ -20,12 +20,13 @@
 // Dismiss × is anchored to the top-right corner.
 
 .yodev-beta-banner {
+  container-type: inline-size; // reflow on the banner's OWN width, not the viewport
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #1b1c2b 0%, #131420 100%);
-  border-bottom: 1px solid rgba(94, 106, 210, 0.45);
-  box-shadow: inset 0 2px 0 0 rgba(113, 112, 255, 0.5); // thin top accent glow
+  background: linear-gradient(120deg, #191a28 0%, #111220 100%);
+  border-bottom: 1px solid rgba(94, 106, 210, 0.35);
+  box-shadow: inset 0 2px 0 0 rgba(113, 112, 255, 0.55); // thin top accent glow
   color: #f4f5fb;
   font-family: inherit;
 
@@ -35,67 +36,68 @@
     width: 100%;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 5px;
-    padding: 11px 44px; // extra right padding leaves room for the corner dismiss
+    gap: 10px 26px;
+    padding: 13px 50px 13px 24px; // extra right padding clears the corner dismiss
   }
 
-  // Row 1 — headline, spans the width
+  // Text column — accent eyebrow + headline, then a muted detail line.
+  &__text {
+    flex: 1 1 320px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__row1 {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+
+  &__eyebrow {
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #8f97ff;
+  }
+
   &__headline {
-    width: 100%;
-    text-align: center;
-    font-size: 1rem;
+    font-size: 0.97rem;
     font-weight: 590;
     color: #f7f8fc;
-    line-height: 1.25;
-  }
-
-  // Row 2 — [tag] · sub · [cta]
-  &__mid {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: 100%;
-  }
-
-  &__tag {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.625rem;
-    font-weight: 600;
-    padding: 4px 9px;
-    border-radius: 999px;
-    color: #c7ccff;
-    background: rgba(94, 106, 210, 0.22);
-    border: 1px solid rgba(94, 106, 210, 0.5);
-    white-space: nowrap;
+    line-height: 1.3;
   }
 
   &__sub {
-    flex: 1 1 auto;
-    min-width: 0;
-    text-align: center;
-    font-size: 0.82rem;
-    color: #a6abc6;
+    font-size: 0.8rem;
+    color: #9096ad;
+    line-height: 1.35;
   }
 
   &__cta {
-    flex-shrink: 0;
-    display: inline-block;
-    padding: 7px 16px;
-    border-radius: 6px;
+    flex: 0 0 auto;
+    margin-left: auto; // pin right when inline
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 8px;
     background: #5e6ad2;
     // !important: Discourse core link styles override an <a> colour otherwise,
     // which made the CTA text invisible until :hover (only the hover rule won).
     color: #ffffff !important;
-    font-weight: 510;
-    font-size: 0.82rem;
+    font-weight: 560;
+    font-size: 0.85rem;
     text-decoration: none;
     white-space: nowrap;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset,
+      0 6px 16px -6px rgba(94, 106, 210, 0.7);
     transition: background-color 0.15s ease, transform 0.05s ease;
 
     &:hover,
@@ -105,24 +107,23 @@
       text-decoration: none;
     }
     &:active {
-      transform: scale(0.97);
+      transform: scale(0.98);
     }
   }
 
-  // Row 3 — developer hook, spans the width
-  &__hook {
-    width: 100%;
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 510;
-    color: #c7ccff;
-    line-height: 1.25;
+  &__arrow {
+    opacity: 0.8;
+  }
+
+  // Member variant — the entitled state reads "active", not an offer.
+  &--member &__eyebrow {
+    color: #5ec98f;
   }
 
   &__dismiss {
     position: absolute;
-    top: 7px;
-    right: 9px;
+    top: 9px;
+    right: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -132,8 +133,8 @@
     border: none;
     border-radius: 6px;
     background: transparent;
-    color: rgba(244, 245, 251, 0.5);
-    font-size: 1.25rem;
+    color: rgba(244, 245, 251, 0.45);
+    font-size: 1.2rem;
     line-height: 1;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -145,15 +146,23 @@
     }
   }
 
-  // Stack the middle row on narrow screens
-  @media (max-width: 600px) {
-    &__mid {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+  // Reflow on the banner's OWN width (it lives in the constrained #main-outlet
+  // column, so a viewport media query is the wrong tool). Below ~700px of banner
+  // width the CTA stacks full-width under the text.
+  @container (max-width: 700px) {
+    &__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 11px;
+      padding: 14px 40px 15px 18px;
     }
-    &__sub {
-      flex-basis: 100%;
+    &__text {
+      flex: 0 0 auto; // row-mode basis is a WIDTH; in column it'd become a height
+    }
+    &__cta {
+      margin-left: 0;
+      width: 100%;
+      justify-content: center;
     }
   }
 }

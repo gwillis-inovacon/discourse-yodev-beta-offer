@@ -57,10 +57,10 @@
     var COPY = {
       en: {
         tag: "Launch offer",
-        anonHeadline: "Launch offer: full Business, free for 90 days. No card.",
+        memberTag: "Business active",
+        anonHeadline: "Full Business, free for 90 days · no card.",
         memberHeadline: "Full Business is active on your account.",
-        sub: "Full access to worX + Workplace.",
-        hook: "Find your next project · Get organized · Today.",
+        sub: "Full access to worX + Workplace · find your next project and get organized.",
         anonCta: "Claim 90 days free",
         memberCta: "Open yoDEV",
         signupTitle: "You’re getting Business — free for 90 days",
@@ -115,10 +115,10 @@
       },
       es: {
         tag: "Oferta de lanzamiento",
-        anonHeadline: "Oferta de lanzamiento: plan Business completo, gratis por 90 días. Sin tarjeta.",
+        memberTag: "Business activo",
+        anonHeadline: "Plan Business completo, gratis por 90 días · sin tarjeta.",
         memberHeadline: "Business completo está activo en tu cuenta.",
-        sub: "Acceso completo a worX + Workplace.",
-        hook: "Encuentra tu próximo proyecto · Organízate · Hoy.",
+        sub: "Acceso completo a worX + Workplace · encuentra tu próximo proyecto y organízate.",
         anonCta: "Consigue 90 días gratis",
         memberCta: "Abrir yoDEV",
         signupTitle: "Obtienes Business gratis por 90 días",
@@ -173,10 +173,10 @@
       },
       pt: {
         tag: "Oferta de lançamento",
-        anonHeadline: "Oferta de lançamento: plano Business completo, grátis por 90 dias. Sem cartão.",
+        memberTag: "Business ativo",
+        anonHeadline: "Plano Business completo, grátis por 90 dias · sem cartão.",
         memberHeadline: "Business completo está ativo na sua conta.",
-        sub: "Acesso completo ao worX + Workplace.",
-        hook: "Encontre seu próximo projeto · Organize-se · Hoje.",
+        sub: "Acesso completo ao worX + Workplace · encontre seu próximo projeto e organize-se.",
         anonCta: "Garanta 90 dias grátis",
         memberCta: "Abrir yoDEV",
         signupTitle: "Você ganha Business grátis por 90 dias",
@@ -310,47 +310,57 @@
     // ─── Banner DOM builder
 
     function buildBanner(parts, ctaHref, onDismiss) {
+      // Editorial offer band: a text column (accent eyebrow + headline, then a
+      // muted detail line) with the CTA pinned right. Reflows on the banner's OWN
+      // width via a container query (it lives in #main-outlet, not full-width), so
+      // the CTA stacks full-width below the text on a narrow content column.
       var banner = document.createElement("div");
-      banner.className = "yodev-beta-banner";
+      banner.className =
+        "yodev-beta-banner" + (parts.member ? " yodev-beta-banner--member" : "");
 
       var inner = document.createElement("div");
       inner.className = "yodev-beta-banner__inner";
 
-      // Row 1 — headline (full width)
-      var headline = document.createElement("div");
+      // Text column
+      var text = document.createElement("div");
+      text.className = "yodev-beta-banner__text";
+
+      var row1 = document.createElement("div");
+      row1.className = "yodev-beta-banner__row1";
+
+      var eyebrow = document.createElement("span");
+      eyebrow.className = "yodev-beta-banner__eyebrow";
+      eyebrow.textContent = parts.tag;
+
+      var headline = document.createElement("span");
       headline.className = "yodev-beta-banner__headline";
       headline.textContent = parts.headline;
 
-      // Row 2 — [tag] · sub · [cta]
-      var mid = document.createElement("div");
-      mid.className = "yodev-beta-banner__mid";
+      row1.appendChild(eyebrow);
+      row1.appendChild(headline);
 
-      var tag = document.createElement("span");
-      tag.className = "yodev-beta-banner__tag";
-      tag.textContent = parts.tag;
-
-      var sub = document.createElement("span");
+      var sub = document.createElement("div");
       sub.className = "yodev-beta-banner__sub";
       sub.textContent = parts.sub;
 
+      text.appendChild(row1);
+      text.appendChild(sub);
+
+      // CTA — first-party app URL, same tab
       var cta = document.createElement("a");
       cta.className = "yodev-beta-banner__cta";
       cta.href = ctaHref;
-      // Open in same tab — the CTA is a first-party app URL
-      cta.textContent = parts.cta;
+      var ctaLabel = document.createElement("span");
+      ctaLabel.textContent = parts.cta;
+      var arrow = document.createElement("span");
+      arrow.className = "yodev-beta-banner__arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      cta.appendChild(ctaLabel);
+      cta.appendChild(arrow);
 
-      mid.appendChild(tag);
-      mid.appendChild(sub);
-      mid.appendChild(cta);
-
-      // Row 3 — developer hook (full width)
-      var hook = document.createElement("div");
-      hook.className = "yodev-beta-banner__hook";
-      hook.textContent = parts.hook;
-
-      inner.appendChild(headline);
-      inner.appendChild(mid);
-      inner.appendChild(hook);
+      inner.appendChild(text);
+      inner.appendChild(cta);
 
       // Dismiss — anchored top-right of the banner
       var dismiss = document.createElement("button");
@@ -983,10 +993,10 @@
           // ── Banner (every page, unless dismissed) ────────────────────────
           if (!isDismissed) {
             var bannerParts = {
-              tag: copy.tag,
+              tag: isLoggedIn ? copy.memberTag : copy.tag,
               headline: isLoggedIn ? copy.memberHeadline : copy.anonHeadline,
               sub: copy.sub,
-              hook: copy.hook,
+              member: isLoggedIn,
               cta: isLoggedIn ? copy.memberCta : copy.anonCta,
             };
 
@@ -1065,7 +1075,7 @@
 
           if (!isLocallyDismissed()) {
             var bannerEl2 = buildBanner(
-              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, hook: copy2.hook, cta: copy2.anonCta },
+              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, member: false, cta: copy2.anonCta },
               ctaHref2,
               function () {
                 setLocallyDismissed();
