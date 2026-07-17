@@ -101,6 +101,8 @@
         splashFootnoteMember: "Included with your membership · thanks for being here early.",
         splashContinue: "Maybe later — continue to the forum",
         splashWorkTagline: "Docs, wikis & real-time collaboration for your whole team.",
+        splashWorkMarqueeTitle: "One workspace for everything your team writes, designs, and plans.",
+        splashWorkMarqueeSub: "No more tool-switching. Docs, canvas, databases, and AI — together.",
         splashWorkFeatures: [
           "Block-based document creation (Docs, DB, Tables)",
           "Unlimited workspaces (10 members per workspace)",
@@ -159,6 +161,8 @@
         splashFootnoteMember: "Incluido con tu membresía · gracias por estar desde el principio.",
         splashContinue: "Quizás luego — continuar al foro",
         splashWorkTagline: "Docs, wikis y colaboración en tiempo real para todo tu equipo.",
+        splashWorkMarqueeTitle: "Un workspace para todo lo que tu equipo escribe, diseña y planifica.",
+        splashWorkMarqueeSub: "Sin cambiar de herramienta. Docs, canvas, bases de datos e IA — juntos.",
         splashWorkFeatures: [
           "Creación de documentos basada en bloques (Docs, DB, Tablas)",
           "Espacios de trabajo ilimitados (10 miembros por espacio)",
@@ -217,6 +221,8 @@
         splashFootnoteMember: "Incluído por ser membro · obrigado por estar aqui desde o início.",
         splashContinue: "Talvez depois — continuar para o fórum",
         splashWorkTagline: "Docs, wikis e colaboração em tempo real para todo o seu time.",
+        splashWorkMarqueeTitle: "Um workspace para tudo que sua equipe escreve, projeta e planeja.",
+        splashWorkMarqueeSub: "Sem troca de ferramentas. Docs, canvas, bancos de dados e IA — juntos.",
         splashWorkFeatures: [
           "Criação de documentos em blocos (Docs, DB, Tabelas)",
           "Espaços de trabalho ilimitados (10 membros por espaço)",
@@ -688,6 +694,29 @@
       return wrap;
     }
 
+    // yoDEV Workplace marquee (homepage's first Workplace marquee, reused). The
+    // image is hosted on Discourse's own CDN (uploaded via the API) so it renders
+    // in preview AND after the yodev.dev cutover — not coupled to the homepage host.
+    var WORKPLACE_MARQUEE_IMG =
+      "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/a/ada28088690142e6715dbc45a9ee5cd1b35d977b.png";
+
+    // Title + sub ABOVE the screenshot (homepage places them beside it; the splash
+    // stacks them). Reuses buildBrowserShot for the browser-chrome image frame.
+    function buildWorkMarquee(title, sub, url, imgSrc, alt) {
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__marquee";
+      var t = document.createElement("h3");
+      t.className = "yodev-beta-splash__marquee-title";
+      t.textContent = title;
+      var s = document.createElement("p");
+      s.className = "yodev-beta-splash__marquee-sub";
+      s.textContent = sub;
+      wrap.appendChild(t);
+      wrap.appendChild(s);
+      wrap.appendChild(buildBrowserShot(url, imgSrc, alt));
+      return wrap;
+    }
+
     function makeCta(label, href, extraClass, onDismiss) {
       var a = document.createElement("a");
       a.className = "yodev-beta-splash__cta" + (extraClass ? " " + extraClass : "");
@@ -754,14 +783,16 @@
       hero.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--hero", onDismiss));
       add(hero);
 
-      // ── Workplace ──
-      add(buildSectionTitle("Workplace", copy.splashWorkTagline));
-      add(buildWorkFeatures(copy.splashWorkFeatures));
-      add(buildBrowserShot(
+      // ── Workplace ── the homepage marquee (title + text above the image) is the
+      // section's lead-in, so no separate generic "Workplace" heading.
+      add(buildWorkMarquee(
+        copy.splashWorkMarqueeTitle,
+        copy.splashWorkMarqueeSub,
         "workplace.yodev.dev",
-        "https://yodev.dev/Doc_capture_2.png",
-        "yoDEV Workplace document editor"
+        WORKPLACE_MARQUEE_IMG,
+        "yoDEV Workplace"
       ));
+      add(buildWorkFeatures(copy.splashWorkFeatures));
       add(buildIntegrations(copy.splashIntegrationsTitle, copy.splashIntegrations));
 
       // ── Developer Marketplace ──

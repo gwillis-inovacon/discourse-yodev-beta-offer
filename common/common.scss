@@ -444,6 +444,29 @@ $yb-primary: #c3c0ff;
     }
   }
 
+  // ── Workplace marquee (title + text above the image) ──
+  &__marquee {
+    margin-bottom: 30px;
+  }
+  &__marquee-title {
+    margin: 0 0 8px;
+    font-family: "Geist", "Inter", inherit;
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: #ffffff;
+  }
+  &__marquee-sub {
+    margin: 0 0 20px;
+    font-family: "Inter", inherit;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #c7c4d8;
+    max-width: 640px;
+  }
+
   // ── Product preview ──
   &__preview {
     position: relative;
