@@ -622,6 +622,243 @@ $yb-primary: #c3c0ff;
     color: #10b981; // emerald "included" affordance (matches template)
   }
 
+  // ── worX audience cards (For Businesses / For Freelancers) ──
+  &__worx {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 26px;
+  }
+  &__worx-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  &__worx-headicon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(94, 106, 210, 0.15);
+    color: #8f97ff;
+  }
+  &__worx-title {
+    margin: 0;
+    font-family: "Geist", "Inter", inherit;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #f7f8fc;
+  }
+  &__worx-headline {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 510;
+    color: #d0d6e0;
+  }
+  &__worx-desc {
+    margin: 0 0 22px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #9096ad;
+  }
+  &__worx-feats {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  &__worx-feat {
+    display: flex;
+    gap: 13px;
+  }
+  &__worx-feat-icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    margin-top: 2px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(94, 106, 210, 0.1);
+    color: #8f97ff;
+  }
+  &__worx-feat-title {
+    margin: 0 0 3px;
+    font-size: 13px;
+    font-weight: 590;
+    color: #f0f1f5;
+  }
+  &__worx-aitag {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 510;
+    color: #8f97ff;
+    vertical-align: baseline;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+  &__worx-feat-desc {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #9096ad;
+  }
+  &__worx-outcome {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  &__worx-outcome1 {
+    margin: 0 0 5px;
+    font-size: 12px;
+    color: #9096ad;
+  }
+  &__worx-outcome2 {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 590;
+    color: #f0f1f5;
+  }
+  &__worx-cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 9px;
+    background: linear-gradient(180deg, #5e6ad2 0%, #4c58c4 100%);
+    color: #ffffff !important;
+    font-family: "Geist", "Inter", inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: filter 0.15s ease;
+
+    &:hover,
+    &:focus {
+      filter: brightness(1.08);
+      color: #ffffff !important;
+      text-decoration: none;
+    }
+  }
+
+  // ── AI-Assisted modal (opened from a feature row's tag) ──
+  &__aimodal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000; // above the splash overlay
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    font-family: "Inter", inherit;
+  }
+  &__aimodal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+  &__aimodal-box {
+    position: relative;
+    max-width: 380px;
+    width: 100%;
+    background: #191a1b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+  }
+  &__aimodal-x {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #9096ad;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f7f8fc;
+    }
+  }
+  &__aimodal-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-right: 24px;
+  }
+  &__aimodal-zap {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(94, 106, 210, 0.15);
+    color: #8f97ff;
+  }
+  &__aimodal-title {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 590;
+    color: #f7f8fc;
+  }
+  &__aimodal-pill {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 590;
+    color: #8f97ff;
+    background: rgba(94, 106, 210, 0.15);
+    padding: 2px 7px;
+    border-radius: 999px;
+  }
+  &__aimodal-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #c7c4d8;
+    }
+  }
+
   // ── "Ready to build" banner ──
   &__banner {
     display: flex;

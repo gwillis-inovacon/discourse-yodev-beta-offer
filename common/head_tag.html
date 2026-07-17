@@ -441,10 +441,19 @@
       svg.setAttribute("stroke-linejoin", "round");
       svg.setAttribute("width", size || 20);
       svg.setAttribute("height", size || 20);
-      paths.forEach(function (d) {
-        var p = document.createElementNS(SVG_NS, "path");
-        p.setAttribute("d", d);
-        svg.appendChild(p);
+      paths.forEach(function (node) {
+        // A node is either a path "d" string, or {t:'circle', cx, cy, r} etc.
+        if (typeof node === "string") {
+          var p = document.createElementNS(SVG_NS, "path");
+          p.setAttribute("d", node);
+          svg.appendChild(p);
+        } else {
+          var el = document.createElementNS(SVG_NS, node.t);
+          for (var k in node) {
+            if (k !== "t" && node.hasOwnProperty(k)) el.setAttribute(k, node[k]);
+          }
+          svg.appendChild(el);
+        }
       });
       return svg;
     }
@@ -461,6 +470,113 @@
       "M9 18c-4.51 2-5-2-7-2",
     ];
     var INT_ICONS = [ICON_TERMINAL, ICON_CODE, ICON_GITHUB];
+
+    // worX card icons (lucide geometry). target/users include circle nodes.
+    var ICON_BUILDING = [
+      "M10 12h4", "M10 8h4", "M14 21v-3a2 2 0 0 0-4 0v3",
+      "M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2",
+      "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16",
+    ];
+    var ICON_FILETEXT = [
+      "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",
+      "M14 2v4a2 2 0 0 0 2 2h4", "M10 9H8", "M16 13H8", "M16 17H8",
+    ];
+    var ICON_TARGET = [
+      { t: "circle", cx: "12", cy: "12", r: "10" },
+      { t: "circle", cx: "12", cy: "12", r: "6" },
+      { t: "circle", cx: "12", cy: "12", r: "2" },
+    ];
+    var ICON_SHIELD = [
+      "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+    ];
+    var ICON_USERS = [
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",
+      "M16 3.128a4 4 0 0 1 0 7.744",
+      "M22 21v-2a4 4 0 0 0-3-3.87",
+      { t: "circle", cx: "9", cy: "7", r: "4" },
+    ];
+    var ICON_ZAP = [
+      "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+    ];
+    var WORX_FEAT_ICONS = { filetext: ICON_FILETEXT, target: ICON_TARGET, shield: ICON_SHIELD, users: ICON_USERS };
+
+    // worX audience cards (For Businesses / For Freelancers), reused verbatim from
+    // the homepage WorxAudienceCards (en/es/pt already-approved copy). The AI tag on
+    // a feature row opens a modal with aiTitle + aiItems.
+    var WORX_CARDS = {
+      en: {
+        biz: {
+          title: "For Businesses", headline: "Build software projects that actually ship",
+          desc: "Most projects don't fail because of talent—they fail because of unclear scope, shifting expectations, and fragmented communication. yoDEV worX fixes this at the system level.",
+          features: [
+            { icon: "filetext", title: "Defined Scope from Day One", desc: "Every project begins with a clear Scope of Work, agreed by both parties before execution starts.", aiTag: "AI Assisted", aiTitle: "AI-Powered Project Definition", aiItems: ["Write your project description with AI assistance", "Define high-level scope with clarity from the start", "Get suggested duration and budget based on your description", "Establish required skills according to your project requirements"] },
+            { icon: "target", title: "Structured Milestones & Deliverables", desc: "Work is broken into measurable stages—so progress is visible, predictable, and controlled.", aiTag: "AI Assisted", aiTitle: "AI-Powered Milestone Planning", aiItems: ["Let AI break down your project deliverables into logical stages", "Detailed description of work per milestone", "Balanced budget allocation across milestones"] },
+            { icon: "shield", title: "Pre-Invoiced", desc: "Each milestone is invoiced upfront, aligning incentives and reducing delivery risk." },
+            { icon: "users", title: "Instant Project Workspace", desc: "The moment terms are accepted, a collaborative workspace is automatically created with documentation, milestones, and real-time collaboration." },
+          ],
+          outcome1: "No scattered tools. No ambiguity. No chasing updates.", outcome2: "Just a clean, shared system designed for successful delivery.", cta: "Post a Structured Project",
+        },
+        dev: {
+          title: "For Freelancers", headline: "Work on projects that are set up to succeed",
+          desc: "Great developers don't fail—projects do. Most platforms leave you dealing with vague requirements and scope creep. yoDEV worX gives you the structure and tools to work with clarity.",
+          features: [
+            { icon: "filetext", title: "Clear Scope Before You Start", desc: "Know exactly what's expected before committing to a project.", aiTag: "AI Assisted", aiTitle: "AI-Powered Proposal Writing", aiItems: ["Use AI assistance to write winning proposals", "AI analyzes project requirements and your profile to optimize your proposal", "Rate and timeline suggestions based on project scope"] },
+            { icon: "target", title: "Defined Milestones & Deliverables", desc: "Work within a structured framework that reduces ambiguity and rework." },
+            { icon: "shield", title: "Pre-Invoiced Payments with Protection", desc: "Every milestone is invoiced in advance, with safeguards and auto-release mechanisms." },
+            { icon: "users", title: "Ready-to-Use Collaborative Workspace", desc: "Start with everything in place: shared documentation, real-time collaboration, and aligned visibility with your client." },
+          ],
+          outcome1: "No guesswork. No chasing approvals. No scattered tools.", outcome2: "Just focused, professional work—with clarity end to end.", cta: "Find Structured Projects",
+        },
+      },
+      es: {
+        biz: {
+          title: "Para Empresas", headline: "Construye proyectos de software que realmente se entregan",
+          desc: "La mayoría de los proyectos no fallan por el talento—fallan por alcance poco claro, expectativas cambiantes y comunicación fragmentada. yoDEV worX soluciona esto a nivel de sistema.",
+          features: [
+            { icon: "filetext", title: "Alcance Definido desde el Día Uno", desc: "Cada proyecto comienza con un Scope of Work claro, acordado por ambas partes antes de iniciar la ejecución.", aiTag: "AI Assisted", aiTitle: "IA para Definir tu Proyecto", aiItems: ["Escribe la descripción de tu proyecto con asistencia de IA", "Define el alcance de alto nivel con claridad desde el inicio", "Recibe sugerencias de duración y presupuesto basadas en tu descripción", "Establece las habilidades requeridas según los requisitos del proyecto"] },
+            { icon: "target", title: "Hitos y Entregables Estructurados", desc: "El trabajo se divide en etapas medibles—el progreso es visible, predecible y controlado.", aiTag: "AI Assisted", aiTitle: "IA para Planificar tus Hitos", aiItems: ["Deja que la IA divida los entregables de tu proyecto en etapas lógicas", "Descripción detallada del trabajo por cada hito", "Asignación de presupuesto equilibrada por hito"] },
+            { icon: "shield", title: "Prefacturado", desc: "Cada hito se factura por adelantado, alineando incentivos y reduciendo el riesgo de entrega." },
+            { icon: "users", title: "Workspace de Proyecto Instantáneo", desc: "En el momento en que se aceptan los términos, se crea automáticamente un workspace colaborativo con documentación, hitos y colaboración en tiempo real." },
+          ],
+          outcome1: "Sin herramientas dispersas. Sin ambigüedad. Sin perseguir actualizaciones.", outcome2: "Solo un sistema limpio y compartido diseñado para entregas exitosas.", cta: "Publicar un Proyecto Estructurado",
+        },
+        dev: {
+          title: "Para Freelancers", headline: "Trabaja en proyectos configurados para el éxito",
+          desc: "Los buenos desarrolladores no fallan—los proyectos sí. La mayoría de las plataformas te dejan lidiando con requisitos vagos y cambios de alcance. yoDEV worX te da la estructura y las herramientas para trabajar con claridad.",
+          features: [
+            { icon: "filetext", title: "Alcance Claro Antes de Empezar", desc: "Sabe exactamente qué se espera antes de comprometerte con un proyecto.", aiTag: "AI Assisted", aiTitle: "IA para Escribir tu Propuesta", aiItems: ["Usa la asistencia de IA para escribir propuestas ganadoras", "La IA analiza los requisitos del proyecto y tu perfil para optimizar tu propuesta", "Sugerencias de tarifa y cronograma basadas en el alcance del proyecto"] },
+            { icon: "target", title: "Hitos y Entregables Definidos", desc: "Trabaja dentro de un marco estructurado que reduce ambigüedad y retrabajo." },
+            { icon: "shield", title: "Pagos prefacturados con protección", desc: "Cada hito se factura por adelantado, con salvaguardas y mecanismos de liberación automática." },
+            { icon: "users", title: "Workspace Colaborativo Listo para Usar", desc: "Comienza con todo en su lugar: documentación compartida, colaboración en tiempo real y visibilidad alineada con tu cliente." },
+          ],
+          outcome1: "Sin adivinanzas. Sin perseguir aprobaciones. Sin herramientas dispersas.", outcome2: "Solo trabajo profesional y enfocado—con claridad de principio a fin.", cta: "Encontrar Proyectos Estructurados",
+        },
+      },
+      pt: {
+        biz: {
+          title: "Para Empresas", headline: "Construa projetos de software que realmente são entregues",
+          desc: "A maioria dos projetos não falha por causa do talento—falham por escopo pouco claro, expectativas mutantes e comunicação fragmentada. yoDEV worX resolve isso no nível do sistema.",
+          features: [
+            { icon: "filetext", title: "Escopo Definido desde o Dia Um", desc: "Cada projeto começa com um Scope of Work claro, acordado por ambas as partes antes do início da execução.", aiTag: "AI Assisted", aiTitle: "IA para Definir seu Projeto", aiItems: ["Escreva a descrição do seu projeto com assistência de IA", "Defina o escopo de alto nível com clareza desde o início", "Receba sugestões de duração e orçamento baseadas na sua descrição", "Estabeleça as habilidades necessárias de acordo com os requisitos do projeto"] },
+            { icon: "target", title: "Marcos e Entregas Estruturados", desc: "O trabalho é dividido em etapas mensuráveis—o progresso é visível, previsível e controlado.", aiTag: "AI Assisted", aiTitle: "IA para Planejar seus Marcos", aiItems: ["Deixe a IA dividir os entregáveis do seu projeto em etapas lógicas", "Descrição detalhada do trabalho por cada marco", "Alocação de orçamento equilibrada por marco"] },
+            { icon: "shield", title: "Pré-faturado", desc: "Cada marco é faturado antecipadamente, alinhando incentivos e reduzindo o risco de entrega." },
+            { icon: "users", title: "Workspace de Projeto Instantâneo", desc: "No momento em que os termos são aceitos, um workspace colaborativo é criado automaticamente com documentação, marcos e colaboração em tempo real." },
+          ],
+          outcome1: "Sem ferramentas dispersas. Sem ambiguidade. Sem perseguir atualizações.", outcome2: "Apenas um sistema limpo e compartilhado projetado para entregas bem-sucedidas.", cta: "Publicar um Projeto Estruturado",
+        },
+        dev: {
+          title: "Para Freelancers", headline: "Trabalhe em projetos configurados para o sucesso",
+          desc: "Bons desenvolvedores não falham—projetos sim. A maioria das plataformas te deixa lidando com requisitos vagos e mudanças de escopo. yoDEV worX oferece a estrutura e as ferramentas para trabalhar com clareza.",
+          features: [
+            { icon: "filetext", title: "Escopo Claro Antes de Começar", desc: "Saiba exatamente o que é esperado antes de se comprometer com um projeto.", aiTag: "AI Assisted", aiTitle: "IA para Escrever sua Proposta", aiItems: ["Use a assistência de IA para escrever propostas vencedoras", "A IA analisa os requisitos do projeto e seu perfil para otimizar sua proposta", "Sugestões de tarifa e cronograma baseadas no escopo do projeto"] },
+            { icon: "target", title: "Marcos e Entregas Definidos", desc: "Trabalhe dentro de um framework estruturado que reduz ambiguidade e retrabalho." },
+            { icon: "shield", title: "Pagamentos pré-faturados com proteção", desc: "Cada marco é faturado com antecedência, com salvaguardas e mecanismos de liberação automática." },
+            { icon: "users", title: "Workspace Colaborativo Pronto para Usar", desc: "Comece com tudo no lugar: documentação compartilhada, colaboração em tempo real e visibilidade alinhada com seu cliente." },
+          ],
+          outcome1: "Sem adivinhações. Sem perseguir aprovações. Sem ferramentas dispersas.", outcome2: "Apenas trabalho profissional e focado—com clareza do início ao fim.", cta: "Encontrar Projetos Estruturados",
+        },
+      },
+    };
 
     // Sample dev profiles — identical to the marketplace landing teaser
     // (frontend/src/content/landing-samples.ts).
@@ -726,8 +842,154 @@
       return a;
     }
 
+    // AI-Assisted modal — opened from a feature row's (AI Assisted) tag. Appends
+    // to <body> above the splash; closes on backdrop click, the ×, or Escape.
+    function showAiModal(title, items) {
+      var overlay = document.createElement("div");
+      overlay.className = "yodev-beta-splash__aimodal";
+      function close() {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        document.removeEventListener("keydown", onKey);
+      }
+      function onKey(e) { if (e.key === "Escape") close(); }
+
+      var backdrop = document.createElement("div");
+      backdrop.className = "yodev-beta-splash__aimodal-backdrop";
+      backdrop.addEventListener("click", close);
+
+      var box = document.createElement("div");
+      box.className = "yodev-beta-splash__aimodal-box";
+
+      var x = document.createElement("button");
+      x.className = "yodev-beta-splash__aimodal-x";
+      x.setAttribute("aria-label", "Close");
+      x.innerHTML = "&times;";
+      x.addEventListener("click", close);
+
+      var head = document.createElement("div");
+      head.className = "yodev-beta-splash__aimodal-head";
+      var zap = document.createElement("span");
+      zap.className = "yodev-beta-splash__aimodal-zap";
+      zap.appendChild(svgIcon(ICON_ZAP, 16));
+      var h = document.createElement("h3");
+      h.className = "yodev-beta-splash__aimodal-title";
+      h.textContent = title;
+      var pill = document.createElement("span");
+      pill.className = "yodev-beta-splash__aimodal-pill";
+      pill.textContent = "Business";
+      head.appendChild(zap);
+      head.appendChild(h);
+      head.appendChild(pill);
+
+      var ul = document.createElement("ul");
+      ul.className = "yodev-beta-splash__aimodal-list";
+      items.forEach(function (it) {
+        var li = document.createElement("li");
+        var chk = document.createElement("span");
+        chk.className = "yodev-beta-splash__check";
+        chk.appendChild(svgIcon(ICON_CHECK, 14));
+        var sp = document.createElement("span");
+        sp.textContent = it;
+        li.appendChild(chk);
+        li.appendChild(sp);
+        ul.appendChild(li);
+      });
+
+      box.appendChild(x);
+      box.appendChild(head);
+      box.appendChild(ul);
+      overlay.appendChild(backdrop);
+      overlay.appendChild(box);
+      (document.body || document.documentElement).appendChild(overlay);
+      document.addEventListener("keydown", onKey);
+    }
+
+    // worX audience card (For Businesses / For Freelancers) — mirrors the homepage
+    // WorxAudienceCards: header, headline, desc, feature rows (some with an AI tag),
+    // an outcome box, and a CTA.
+    function buildWorxCard(data, headerIcon, ctaHref) {
+      var card = document.createElement("div");
+      card.className = "yodev-beta-splash__worx";
+
+      var head = document.createElement("div");
+      head.className = "yodev-beta-splash__worx-head";
+      var hIcon = document.createElement("span");
+      hIcon.className = "yodev-beta-splash__worx-headicon";
+      hIcon.appendChild(svgIcon(headerIcon, 20));
+      var title = document.createElement("h3");
+      title.className = "yodev-beta-splash__worx-title";
+      title.textContent = data.title;
+      head.appendChild(hIcon);
+      head.appendChild(title);
+      card.appendChild(head);
+
+      var headline = document.createElement("p");
+      headline.className = "yodev-beta-splash__worx-headline";
+      headline.textContent = data.headline;
+      card.appendChild(headline);
+
+      var desc = document.createElement("p");
+      desc.className = "yodev-beta-splash__worx-desc";
+      desc.textContent = data.desc;
+      card.appendChild(desc);
+
+      var feats = document.createElement("div");
+      feats.className = "yodev-beta-splash__worx-feats";
+      data.features.forEach(function (f) {
+        var row = document.createElement("div");
+        row.className = "yodev-beta-splash__worx-feat";
+        var fIcon = document.createElement("span");
+        fIcon.className = "yodev-beta-splash__worx-feat-icon";
+        fIcon.appendChild(svgIcon(WORX_FEAT_ICONS[f.icon] || ICON_CHECK, 18));
+        var body = document.createElement("div");
+        var ft = document.createElement("p");
+        ft.className = "yodev-beta-splash__worx-feat-title";
+        ft.textContent = f.title;
+        if (f.aiTag) {
+          ft.appendChild(document.createTextNode(" "));
+          var btn = document.createElement("button");
+          btn.className = "yodev-beta-splash__worx-aitag";
+          btn.textContent = "(" + f.aiTag + ")";
+          btn.addEventListener("click", (function (t, items) {
+            return function (e) { e.preventDefault(); showAiModal(t, items); };
+          })(f.aiTitle, f.aiItems));
+          ft.appendChild(btn);
+        }
+        var fd = document.createElement("p");
+        fd.className = "yodev-beta-splash__worx-feat-desc";
+        fd.textContent = f.desc;
+        body.appendChild(ft);
+        body.appendChild(fd);
+        row.appendChild(fIcon);
+        row.appendChild(body);
+        feats.appendChild(row);
+      });
+      card.appendChild(feats);
+
+      var outcome = document.createElement("div");
+      outcome.className = "yodev-beta-splash__worx-outcome";
+      var o1 = document.createElement("p");
+      o1.className = "yodev-beta-splash__worx-outcome1";
+      o1.textContent = data.outcome1;
+      var o2 = document.createElement("p");
+      o2.className = "yodev-beta-splash__worx-outcome2";
+      o2.textContent = data.outcome2;
+      outcome.appendChild(o1);
+      outcome.appendChild(o2);
+      card.appendChild(outcome);
+
+      var cta = document.createElement("a");
+      cta.className = "yodev-beta-splash__worx-cta";
+      cta.href = ctaHref;
+      cta.textContent = data.cta;
+      card.appendChild(cta);
+
+      return card;
+    }
+
     function buildSplash(copy, isLoggedIn, ctaHref, onDismiss) {
       var ctaLabel = isLoggedIn ? copy.memberCta : copy.anonCta;
+      var worxCards = WORX_CARDS[getLocale()] || WORX_CARDS.en;
 
       var overlay = document.createElement("div");
       overlay.className = "yodev-beta-splash";
@@ -795,14 +1057,13 @@
       add(buildWorkFeatures(copy.splashWorkFeatures));
       add(buildIntegrations(copy.splashIntegrationsTitle, copy.splashIntegrations));
 
-      // ── Developer Marketplace ──
+      // ── worX ── the two homepage audience cards (For Businesses / For Freelancers).
       add(buildSectionTitle("worX", copy.splashMarketTagline));
       var cards = document.createElement("div");
       cards.className = "yodev-beta-splash__cards";
-      cards.appendChild(buildFeatureCard(ICON_BRIEFCASE, copy.empCardTitle, copy.empCardHeadline, copy.empCardDesc, copy.empCardItems));
-      cards.appendChild(buildFeatureCard(ICON_CODE, copy.devCardTitle, copy.devCardHeadline, copy.devCardDesc, copy.devCardItems));
+      cards.appendChild(buildWorxCard(worxCards.biz, ICON_BUILDING, ctaHref));
+      cards.appendChild(buildWorxCard(worxCards.dev, ICON_CODE, ctaHref));
       add(cards);
-      add(buildDevCards(copy));
 
       // ── Banner ──
       var banner = document.createElement("div");
