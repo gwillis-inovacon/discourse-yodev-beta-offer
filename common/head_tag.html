@@ -1006,8 +1006,8 @@
       return card;
     }
 
-    function buildSplash(copy, isLoggedIn, ctaHref, onDismiss) {
-      var ctaLabel = isLoggedIn ? copy.memberCta : copy.anonCta;
+    function buildSplash(copy, isEntitled, ctaHref, onDismiss) {
+      var ctaLabel = isEntitled ? copy.memberCta : copy.anonCta;
       var worxCards = WORX_CARDS[getLocale()] || WORX_CARDS.en;
 
       var overlay = document.createElement("div");
@@ -1055,11 +1055,11 @@
       hero.appendChild(eyebrow);
       var headline = document.createElement("h2");
       headline.className = "yodev-beta-splash__headline";
-      headline.textContent = isLoggedIn ? copy.splashHeadlineMember : copy.splashHeadlineAnon;
+      headline.textContent = isEntitled ? copy.splashHeadlineMember : copy.splashHeadlineAnon;
       hero.appendChild(headline);
       var sub = document.createElement("p");
       sub.className = "yodev-beta-splash__sub";
-      sub.textContent = isLoggedIn ? copy.splashSubMember : copy.splashSubAnon;
+      sub.textContent = isEntitled ? copy.splashSubMember : copy.splashSubAnon;
       hero.appendChild(sub);
       // Primary CTA + a quiet "Learn more" (same homepage target) so the splash
       // doesn't read as "click = straight to a signup form" — matches the banner.
@@ -1102,7 +1102,7 @@
       bs.className = "yodev-beta-splash__banner-sub";
       // Members already have the platform — never show them the "free for 90 days"
       // offer copy (they'd read it as an expiry on their permanent access).
-      bs.textContent = isLoggedIn ? copy.splashBannerSubMember : copy.splashBannerSub;
+      bs.textContent = isEntitled ? copy.splashBannerSubMember : copy.splashBannerSub;
       btext.appendChild(bt);
       btext.appendChild(bs);
       banner.appendChild(btext);
@@ -1118,7 +1118,7 @@
       foot.className = "yodev-beta-splash__footnote";
       // Same reason: the anon footnote says "reverts to Free after 90 days", which
       // is false for a permanent member. Members get the "included with membership" line.
-      foot.textContent = isLoggedIn ? copy.splashFootnoteMember : copy.splashFootnote;
+      foot.textContent = isEntitled ? copy.splashFootnoteMember : copy.splashFootnote;
       content.appendChild(foot);
       var cont = document.createElement("button");
       cont.className = "yodev-beta-splash__continue";
@@ -1291,8 +1291,25 @@
           var isLoggedIn = !!currentUser;
           var username = isLoggedIn ? currentUser.username : null;
 
+          // Entitlement, not just login: a logged-in user only gets the "Business
+          // is active" copy if they're actually in the yodev_business group (comp
+          // grandfathered members, beta grantees, or paying subscribers all land
+          // there). A logged-in but un-granted user (e.g. a fresh signup before the
+          // launch grant runs) sees the OFFER, not a false "you already have it".
+          // Discourse hands the browser the current user's OWN groups on
+          // /session/current.json — no server call, no public field needed.
+          var isEntitled =
+            isLoggedIn &&
+            Array.isArray(currentUser.groups) &&
+            currentUser.groups.some(function (g) {
+              return g && g.name === "yodev_business";
+            });
+
           console.log(
-            "[yodev-beta-offer] auth state: " + (isLoggedIn ? "member (" + username + ")" : "anonymous")
+            "[yodev-beta-offer] auth state: " +
+              (isLoggedIn
+                ? "logged-in (" + username + ")" + (isEntitled ? " · entitled" : " · not-entitled")
+                : "anonymous")
           );
 
           // ── Dismissal check ──────────────────────────────────────────────
@@ -1325,7 +1342,9 @@
 
           // ── Decide CTA href ──────────────────────────────────────────────
           var ctaHref;
-          if (isLoggedIn && s.marketplaceUrl) {
+          // Only an entitled member is routed into the app (marketplaceUrl); a
+          // free logged-in user sees the offer, so their CTA points at the homepage.
+          if (isEntitled && s.marketplaceUrl) {
             ctaHref = s.marketplaceUrl;
           } else {
             ctaHref = s.ctaUrl || "https://yodev.dev";
@@ -1334,11 +1353,11 @@
           // ── Banner (every page, unless dismissed) ────────────────────────
           if (!isDismissed) {
             var bannerParts = {
-              tag: isLoggedIn ? copy.memberTag : copy.tag,
-              headline: isLoggedIn ? copy.memberHeadline : copy.anonHeadline,
+              tag: isEntitled ? copy.memberTag : copy.tag,
+              headline: isEntitled ? copy.memberHeadline : copy.anonHeadline,
               sub: copy.sub,
-              member: isLoggedIn,
-              cta: isLoggedIn ? copy.memberCta : copy.anonCta,
+              member: isEntitled,
+              cta: isEntitled ? copy.memberCta : copy.anonCta,
               learnMore: copy.learnMore,
             };
 
@@ -1376,7 +1395,7 @@
               console.log("[yodev-beta-offer] splash already dismissed; skipping");
             } else {
               var splashDone = false;
-              var splashEl = buildSplash(copy, isLoggedIn, ctaHref, function () {
+              var splashEl = buildSplash(copy, isEntitled, ctaHref, function () {
                 if (splashDone) return;
                 splashDone = true;
                 console.log("[yodev-beta-offer] splash dismissed/clicked");
