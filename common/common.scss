@@ -949,6 +949,13 @@ $yb-primary: #c3c0ff;
     color: #8a8f98;
   }
 
+  &__banner-ctas {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
   // ── Footer bits ──
   &__footnote {
     margin: 18px 0 0;
@@ -1181,6 +1188,7 @@ $yb-primary: #c3c0ff;
       align-items: stretch;
       text-align: center;
     }
+    &__banner-ctas { flex-direction: column; align-items: stretch; }
     &__cta--banner { width: 100%; }
   }
 
