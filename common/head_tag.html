@@ -581,9 +581,9 @@
     // Sample dev profiles — identical to the marketplace landing teaser
     // (frontend/src/content/landing-samples.ts).
     var SAMPLE_DEVS = [
-      { name: "Pablo Martín", flag: "🇪🇸", headline: "Senior Full-Stack Engineer · React + Node", rating: 5.0, reviews: 42, rateMin: 45, rateMax: 70, avail: "available", skills: ["React", "Node.js", "TypeScript"], photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
-      { name: "Luciana Gómez", flag: "🇦🇷", headline: "Frontend & UX Engineer · React + Design Systems", rating: 4.9, reviews: 87, rateMin: 50, rateMax: 80, avail: "limited", skills: ["React", "Next.js", "Tailwind"], photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
-      { name: "Roberto Fernández", flag: "🇨🇱", headline: "Backend Engineer · Python + Go", rating: 4.9, reviews: 56, rateMin: 55, rateMax: 90, avail: "available", skills: ["Python", "Django", "Go"], photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop" },
+      { name: "Pablo Martín", flag: "🇪🇸", headline: "Senior Full-Stack Engineer · React + Node", rating: 5.0, reviews: 42, rateMin: 45, rateMax: 70, avail: "available", skills: ["React", "Node.js", "TypeScript"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/e/e7f0fcc33cc2ec8e5b5ddd0510a1dbe803bc515b.jpeg" },
+      { name: "Luciana Gómez", flag: "🇦🇷", headline: "Frontend & UX Engineer · React + Design Systems", rating: 4.9, reviews: 87, rateMin: 50, rateMax: 80, avail: "limited", skills: ["React", "Next.js", "Tailwind"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/f/f3206f2cbf69d8633bcb7d86bbccc0b16a77d8c9.jpeg" },
+      { name: "Roberto Fernández", flag: "🇨🇱", headline: "Backend Engineer · Python + Go", rating: 4.9, reviews: 56, rateMin: 55, rateMax: 90, avail: "available", skills: ["Python", "Django", "Go"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/6/605261c4908765fb7ba7ba90aed53e520aec835b.jpeg" },
     ];
 
     function buildSectionTitle(title, tagline) {
@@ -1064,6 +1064,7 @@
       cards.appendChild(buildWorxCard(worxCards.biz, ICON_BUILDING, ctaHref));
       cards.appendChild(buildWorxCard(worxCards.dev, ICON_CODE, ctaHref));
       add(cards);
+      add(buildDevCards(copy)); // sample dev-profile cards, right under the worX cards
 
       // ── Banner ──
       var banner = document.createElement("div");
