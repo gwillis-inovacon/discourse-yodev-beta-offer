@@ -68,6 +68,7 @@
         memberHeadline: "Full Business is active on your account.",
         sub: "Full access to worX + Workplace · find your next project and get organized.",
         anonCta: "Claim 90 days free",
+        learnMore: "Learn more",
         memberCta: "Open yoDEV",
         signupTitle: "You’re getting Business — free for 90 days",
         signupBody: "Full access to worX + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
@@ -128,6 +129,7 @@
         memberHeadline: "Business completo está activo en tu cuenta.",
         sub: "Acceso completo a worX + Workplace · encuentra tu próximo proyecto y organízate.",
         anonCta: "Consigue 90 días gratis",
+        learnMore: "Saber más",
         memberCta: "Abrir yoDEV",
         signupTitle: "Obtienes Business gratis por 90 días",
         signupBody: "Acceso completo a worX + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
@@ -188,6 +190,7 @@
         memberHeadline: "Business completo está ativo na sua conta.",
         sub: "Acesso completo ao worX + Workplace · encontre seu próximo projeto e organize-se.",
         anonCta: "Garanta 90 dias grátis",
+        learnMore: "Saiba mais",
         memberCta: "Abrir yoDEV",
         signupTitle: "Você ganha Business grátis por 90 dias",
         signupBody: "Acesso completo ao worX + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
@@ -377,7 +380,14 @@
       sub.className = "yodev-beta-banner__sub";
       sub.appendChild(buildSubWithBrands(parts.sub));
 
-      // CTA — first-party app URL, same tab
+      // CTA(s) — first-party app URLs, same tab. Primary = the offer / app entry;
+      // the secondary "Learn more" drives homepage click-throughs for visitors who
+      // arrived on Discourse cold and don't yet know the platform. Shown to everyone
+      // (anon AND logged-in members — a member landing here has no offer context
+      // either), and it softens the "am I being sent to a signup form?" read.
+      var ctas = document.createElement("div");
+      ctas.className = "yodev-beta-banner__ctas";
+
       var cta = document.createElement("a");
       cta.className = "yodev-beta-banner__cta";
       cta.href = ctaHref;
@@ -389,10 +399,19 @@
       arrow.textContent = "→";
       cta.appendChild(ctaLabel);
       cta.appendChild(arrow);
+      ctas.appendChild(cta);
+
+      if (parts.learnMore) {
+        var cta2 = document.createElement("a");
+        cta2.className = "yodev-beta-banner__cta2";
+        cta2.href = parts.learnMoreHref || ctaHref;
+        cta2.textContent = parts.learnMore;
+        ctas.appendChild(cta2);
+      }
 
       content.appendChild(lead);
       content.appendChild(sub);
-      content.appendChild(cta);
+      content.appendChild(ctas);
 
       banner.appendChild(dismiss);
       banner.appendChild(content);
@@ -1310,6 +1329,7 @@
               sub: copy.sub,
               member: isLoggedIn,
               cta: isLoggedIn ? copy.memberCta : copy.anonCta,
+              learnMore: copy.learnMore,
             };
 
             var bannerEl = buildBanner(bannerParts, ctaHref, function () {
@@ -1387,7 +1407,7 @@
 
           if (!isLocallyDismissed()) {
             var bannerEl2 = buildBanner(
-              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, member: false, cta: copy2.anonCta },
+              { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, member: false, cta: copy2.anonCta, learnMore: copy2.learnMore },
               ctaHref2,
               function () {
                 setLocallyDismissed();

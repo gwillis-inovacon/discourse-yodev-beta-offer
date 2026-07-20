@@ -105,8 +105,15 @@ $yb-primary: #c3c0ff;
     }
   }
 
-  &__cta {
+  &__ctas {
     align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__cta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -135,6 +142,32 @@ $yb-primary: #c3c0ff;
     }
     &:active {
       transform: scale(0.97);
+    }
+  }
+
+  // Secondary "Learn more" — quiet ghost button; drives homepage click-throughs.
+  &__cta2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 20px;
+    border-radius: 9px;
+    border: 1px solid rgba(195, 192, 255, 0.35);
+    background: transparent;
+    color: #c3c0ff !important;
+    font-family: $yb-font-display !important;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover,
+    &:focus {
+      background: rgba(195, 192, 255, 0.08);
+      border-color: rgba(195, 192, 255, 0.55);
+      color: #d4d2ff !important;
+      text-decoration: none;
     }
   }
 
@@ -180,8 +213,13 @@ $yb-primary: #c3c0ff;
 
   // Narrow content column → CTA spans full width (mirrors the mockup's w-full sm:w-auto).
   @container (max-width: 520px) {
-    &__cta {
+    &__ctas {
       align-self: stretch;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    &__cta,
+    &__cta2 {
       width: 100%;
     }
   }
