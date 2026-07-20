@@ -1061,7 +1061,13 @@
       sub.className = "yodev-beta-splash__sub";
       sub.textContent = isLoggedIn ? copy.splashSubMember : copy.splashSubAnon;
       hero.appendChild(sub);
-      hero.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--hero", onDismiss));
+      // Primary CTA + a quiet "Learn more" (same homepage target) so the splash
+      // doesn't read as "click = straight to a signup form" — matches the banner.
+      var heroCtas = document.createElement("div");
+      heroCtas.className = "yodev-beta-splash__hero-ctas";
+      heroCtas.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--hero", onDismiss));
+      heroCtas.appendChild(makeCta(copy.learnMore, ctaHref, "yodev-beta-splash__cta--learn", onDismiss));
+      hero.appendChild(heroCtas);
       add(hero);
 
       // ── Workplace ── the homepage marquee (title + text above the image) is the

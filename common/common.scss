@@ -480,6 +480,29 @@ $yb-primary: #c3c0ff;
       flex-shrink: 0;
       white-space: nowrap;
     }
+    // Quiet "Learn more" — ghost, no gradient, no pulse.
+    &--learn {
+      background: transparent;
+      border: 1px solid rgba(94, 106, 210, 0.5);
+      color: #c7ccff !important;
+      animation: none;
+
+      &:hover,
+      &:focus {
+        filter: none;
+        background: rgba(94, 106, 210, 0.12);
+        border-color: rgba(94, 106, 210, 0.7);
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  &__hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
   }
 
   // ── Workplace marquee (title + text above the image) ──
