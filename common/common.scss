@@ -114,6 +114,7 @@ $yb-primary: #c3c0ff;
   }
 
   &__cta {
+    box-sizing: border-box; // so width:100% (mobile stack) includes the padding
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -147,6 +148,7 @@ $yb-primary: #c3c0ff;
 
   // Secondary "Learn more" — quiet ghost button; drives homepage click-throughs.
   &__cta2 {
+    box-sizing: border-box; // so width:100% (mobile stack) includes the padding + border
     display: inline-flex;
     align-items: center;
     justify-content: center;
