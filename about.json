@@ -3,6 +3,11 @@
   "about_url": "https://github.com/gwillis-inovacon/discourse-yodev-beta-offer",
   "license_url": "https://github.com/gwillis-inovacon/discourse-yodev-beta-offer/blob/main/LICENSE",
   "component": true,
-  "assets": {},
+  "assets": {
+    "workplace_marquee": "assets/workplace-marquee.png",
+    "dev_1": "assets/dev-1.jpg",
+    "dev_2": "assets/dev-2.jpg",
+    "dev_3": "assets/dev-3.jpg"
+  },
   "color_schemes": {}
 }

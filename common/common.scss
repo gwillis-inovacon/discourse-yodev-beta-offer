@@ -8,6 +8,19 @@
   --yodev-beta-dismissed-field-id: #{$dismissed_field_id};
   --yodev-beta-splash-enabled: #{if($splash_enabled, 1, 0)};
   --yodev-beta-splash-dismissed-field-id: #{$splash_dismissed_field_id};
+
+  // Images ship as THEME ASSETS (about.json), not as forum uploads (YOD-482).
+  // The previous set was hotlinked from Discourse's own CDN and every one of
+  // them was eventually deleted: Discourse garbage-collects uploads that no
+  // POST references, and an upload referenced only from theme HTML looks
+  // orphaned to that job. Assets live in the repo, so nothing can collect them.
+  //
+  // Routed through custom properties because head_tag.html is a plain <script>
+  // with no access to SCSS variables — the same channel the settings above use.
+  --yodev-beta-img-marquee: "#{$workplace_marquee}";
+  --yodev-beta-img-dev-1: "#{$dev_1}";
+  --yodev-beta-img-dev-2: "#{$dev_2}";
+  --yodev-beta-img-dev-3: "#{$dev_3}";
 }
 
 // ─── Banner ──────────────────────────────────────────────────────────────────

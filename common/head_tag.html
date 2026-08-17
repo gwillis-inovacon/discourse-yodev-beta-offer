@@ -625,10 +625,15 @@
 
     // Sample dev profiles — identical to the marketplace landing teaser
     // (frontend/src/content/landing-samples.ts).
+    //
+    // Photos come from THEME ASSETS, resolved at render time (YOD-482). They
+    // used to be Discourse CDN uploads and were all deleted by the orphan-upload
+    // cleanup — see the note in common.scss. Do not paste a forum upload URL
+    // back in here; it will work for a while and then silently 404.
     var SAMPLE_DEVS = [
-      { name: "Pablo Martín", flag: "🇪🇸", headline: "Senior Full-Stack Engineer · React + Node", rating: 5.0, reviews: 42, rateMin: 45, rateMax: 70, avail: "available", skills: ["React", "Node.js", "TypeScript"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/e/e7f0fcc33cc2ec8e5b5ddd0510a1dbe803bc515b.jpeg" },
-      { name: "Luciana Gómez", flag: "🇦🇷", headline: "Frontend & UX Engineer · React + Design Systems", rating: 4.9, reviews: 87, rateMin: 50, rateMax: 80, avail: "limited", skills: ["React", "Next.js", "Tailwind"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/f/f3206f2cbf69d8633bcb7d86bbccc0b16a77d8c9.jpeg" },
-      { name: "Roberto Fernández", flag: "🇨🇱", headline: "Backend Engineer · Python + Go", rating: 4.9, reviews: 56, rateMin: 55, rateMax: 90, avail: "available", skills: ["Python", "Django", "Go"], photo: "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/6/605261c4908765fb7ba7ba90aed53e520aec835b.jpeg" },
+      { name: "Pablo Martín", flag: "🇪🇸", headline: "Senior Full-Stack Engineer · React + Node", rating: 5.0, reviews: 42, rateMin: 45, rateMax: 70, avail: "available", skills: ["React", "Node.js", "TypeScript"], photoVar: "--yodev-beta-img-dev-1" },
+      { name: "Luciana Gómez", flag: "🇦🇷", headline: "Frontend & UX Engineer · React + Design Systems", rating: 4.9, reviews: 87, rateMin: 50, rateMax: 80, avail: "limited", skills: ["React", "Next.js", "Tailwind"], photoVar: "--yodev-beta-img-dev-2" },
+      { name: "Roberto Fernández", flag: "🇨🇱", headline: "Backend Engineer · Python + Go", rating: 4.9, reviews: 56, rateMin: 55, rateMax: 90, avail: "available", skills: ["Python", "Django", "Go"], photoVar: "--yodev-beta-img-dev-3" },
     ];
 
     function buildSectionTitle(title, tagline) {
@@ -750,8 +755,11 @@
       var ava = document.createElement("div");
       ava.className = "yodev-beta-splash__dev-avatar";
       var img = document.createElement("img");
-      img.src = dev.photo;
-      img.alt = dev.name;
+      img.src = readCssVarString(dev.photoVar);
+      // Empty alt: these are decorative stand-ins for fictional profiles, so a
+      // screen reader announcing a name that isn't a real person is noise. The
+      // name is already in the card text beside it.
+      img.alt = "";
       img.setAttribute("referrerpolicy", "no-referrer");
       ava.appendChild(img);
       var dot = document.createElement("span");
@@ -855,11 +863,19 @@
       return wrap;
     }
 
-    // yoDEV Workplace marquee (homepage's first Workplace marquee, reused). The
-    // image is hosted on Discourse's own CDN (uploaded via the API) so it renders
-    // in preview AND after the yodev.dev cutover — not coupled to the homepage host.
-    var WORKPLACE_MARQUEE_IMG =
-      "https://canada1.discourse-cdn.com/flex009/uploads/inovacon/original/2X/a/ada28088690142e6715dbc45a9ee5cd1b35d977b.png";
+    // yoDEV Workplace marquee (homepage's first Workplace marquee, reused).
+    //
+    // Ships as a theme asset (YOD-482). It was previously a Discourse CDN upload,
+    // chosen so it wouldn't couple the component to the homepage host — but that
+    // traded a coupling problem for a deletion one, and the upload was collected.
+    // A repo asset has neither: nothing external owns it.
+    //
+    // A FUNCTION, not a const: head_tag runs early in <head>, so reading the
+    // custom property at parse time can land before the theme stylesheet applies
+    // and yield "". Same reason the settings above live in readSettings().
+    function workplaceMarqueeImg() {
+      return readCssVarString("--yodev-beta-img-marquee");
+    }
 
     // Title + sub ABOVE the screenshot (homepage places them beside it; the splash
     // stacks them). Reuses buildBrowserShot for the browser-chrome image frame.
@@ -1149,7 +1165,7 @@
         copy.splashWorkMarqueeTitle,
         copy.splashWorkMarqueeSub,
         "workplace.yodev.dev",
-        WORKPLACE_MARQUEE_IMG,
+        workplaceMarqueeImg(),
         "yoDEV Workplace"
       ));
       add(buildWorkFeatures(copy.splashWorkFeatures));
