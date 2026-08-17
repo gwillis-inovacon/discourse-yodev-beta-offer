@@ -121,6 +121,11 @@
         ],
         availAvailable: "Available",
         availLimited: "Limited",
+        foundingTag: "Founding cohort",
+        foundingHeadline: "Keep Business for life",
+        foundingBody: "Complete your worX profile to 80% and add the “Find me on yoDEV worX” banner to your LinkedIn.",
+        foundingCta: "Get the banner",
+        foundingNote: "20 developers will be selected at the end of October.",
       },
       es: {
         tag: "Oferta de lanzamiento",
@@ -182,6 +187,11 @@
         ],
         availAvailable: "Disponible",
         availLimited: "Limitado",
+        foundingTag: "Grupo fundador",
+        foundingHeadline: "Quédate con Business de por vida",
+        foundingBody: "Completa tu perfil de worX al 80% y agrega el banner “Find me on yoDEV worX” a tu LinkedIn.",
+        foundingCta: "Consigue el banner",
+        foundingNote: "A finales de octubre seleccionaremos a 20 desarrolladores.",
       },
       pt: {
         tag: "Oferta de lançamento",
@@ -243,7 +253,23 @@
         ],
         availAvailable: "Disponível",
         availLimited: "Limitado",
+        foundingTag: "Grupo fundador",
+        foundingHeadline: "Fique com o Business para sempre",
+        foundingBody: "Complete seu perfil no worX até 80% e adicione o banner “Find me on yoDEV worX” ao seu LinkedIn.",
+        foundingCta: "Baixe o banner",
+        foundingNote: "No fim de outubro vamos selecionar 20 desenvolvedores.",
       },
+    };
+
+    // Where the LinkedIn banner actually lives (YOD-480). Locale-explicit on
+    // purpose: bare /resources 307s to English, and this splash is served to a
+    // mostly Spanish-speaking audience. The page sits in worX's (public) route
+    // group, so it is reachable anonymously — unlike the rest of worX, which
+    // bounces anonymous visitors to the apex.
+    var RESOURCES_URL = {
+      en: "https://worx.yodev.dev/en/resources",
+      es: "https://worx.yodev.dev/es/resources",
+      pt: "https://worx.yodev.dev/pt/resources",
     };
 
     function getLocale() {
@@ -852,6 +878,53 @@
       return wrap;
     }
 
+    // Founding-cohort offer (YOD-481): lifetime Business for developers who
+    // complete a worX profile and add the LinkedIn banner.
+    //
+    // Callers MUST gate this on !isEntitled. A member already holding permanent
+    // comp Business would be offered something they own — the same failure the
+    // 90-day copy guards against, and the reason that guard exists.
+    //
+    // Wording is deliberately "selected at the end of October", not "first 20".
+    // The offer runs on two channels at once (this splash and the LinkedIn run)
+    // with no shared counter, so a first-come promise could be oversubscribed
+    // with no way to close it.
+    function buildFoundingOffer(copy, onDismiss) {
+      var href = RESOURCES_URL[getLocale()] || RESOURCES_URL.es;
+
+      var wrap = document.createElement("div");
+      wrap.className = "yodev-beta-splash__founding";
+
+      var tag = document.createElement("span");
+      tag.className = "yodev-beta-splash__founding-tag";
+      tag.textContent = copy.foundingTag;
+      wrap.appendChild(tag);
+
+      var h = document.createElement("h3");
+      h.className = "yodev-beta-splash__founding-h";
+      h.textContent = copy.foundingHeadline;
+      wrap.appendChild(h);
+
+      var body = document.createElement("p");
+      body.className = "yodev-beta-splash__founding-body";
+      body.textContent = copy.foundingBody;
+      wrap.appendChild(body);
+
+      var cta = makeCta(copy.foundingCta, href, "yodev-beta-splash__cta--founding", onDismiss);
+      // Leaves the forum for another origin, so open in a new tab: the reader
+      // should keep their place rather than lose the article they came for.
+      cta.target = "_blank";
+      cta.rel = "noopener";
+      wrap.appendChild(cta);
+
+      var note = document.createElement("p");
+      note.className = "yodev-beta-splash__founding-note";
+      note.textContent = copy.foundingNote;
+      wrap.appendChild(note);
+
+      return wrap;
+    }
+
     function makeCta(label, href, extraClass, onDismiss) {
       var a = document.createElement("a");
       a.className = "yodev-beta-splash__cta" + (extraClass ? " " + extraClass : "");
@@ -1090,6 +1163,11 @@
       cards.appendChild(buildWorxCard(worxCards.dev, ICON_CODE, ctaHref));
       add(cards);
       add(buildDevCards(copy)); // sample dev-profile cards, right under the worX cards
+
+      // ── Founding cohort ── follows the worX content because the offer is
+      // conditional on a worX profile. Hidden from entitled members: they
+      // already hold permanent Business and cannot be sold it again.
+      if (!isEntitled) add(buildFoundingOffer(copy, onDismiss));
 
       // ── Banner ──
       var banner = document.createElement("div");

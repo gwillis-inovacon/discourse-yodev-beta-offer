@@ -482,6 +482,28 @@ $yb-primary: #c3c0ff;
       flex-shrink: 0;
       white-space: nowrap;
     }
+    // Founding-cohort CTA — ghost, deliberately subordinate to "Claim 90 days
+    // free". Two reasons it must not be a solid primary button: on mobile every
+    // CTA goes full-width, so a solid one would sit directly above the real
+    // conversion at equal weight; and this link leads to a banner download,
+    // which is a LATER step — an anonymous reader needs to sign up first.
+    &--founding {
+      background: transparent;
+      border: 1px solid rgba(94, 106, 210, 0.5);
+      color: #c7ccff !important;
+      box-shadow: none;
+      animation: none;
+      padding: 11px 22px;
+      font-size: 14px;
+
+      &:hover,
+      &:focus {
+        filter: none;
+        background: rgba(94, 106, 210, 0.12);
+        border-color: rgba(94, 106, 210, 0.7);
+        color: #ffffff !important;
+      }
+    }
     // Quiet "Learn more" — ghost, no gradient, no pulse.
     &--learn {
       background: transparent;
@@ -923,6 +945,54 @@ $yb-primary: #c3c0ff;
   }
 
   // ── "Ready to build" banner ──
+  // Founding-cohort offer (YOD-481). Tinted rather than gradient-filled so it
+  // reads as a distinct, secondary offer: it is conditional on having a worX
+  // profile, and must not outshout the primary "Claim 90 days free" CTA.
+  &__founding {
+    background: linear-gradient(135deg, rgba(94, 106, 210, 0.14) 0%, rgba(94, 106, 210, 0.04) 100%);
+    border: 1px solid rgba(94, 106, 210, 0.32);
+    border-radius: 16px;
+    padding: 22px 24px;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+
+  &__founding-tag {
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 510;
+    padding: 5px 12px;
+    border-radius: 999px;
+    color: #c7ccff;
+    border: 1px solid rgba(94, 106, 210, 0.45);
+    background: rgba(94, 106, 210, 0.18);
+  }
+
+  &__founding-h {
+    margin: 13px 0 6px;
+    font-size: 1.15rem;
+    font-weight: 590;
+    letter-spacing: -0.01em;
+    color: #f7f8f8;
+  }
+
+  &__founding-body {
+    margin: 0 0 16px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #8a8f98;
+    max-width: 56ch;
+  }
+
+  &__founding-note {
+    margin: 13px 0 0;
+    font-size: 0.72rem;
+    color: #6f7480;
+  }
+
   &__banner {
     display: flex;
     align-items: center;
@@ -1192,6 +1262,8 @@ $yb-primary: #c3c0ff;
     }
     &__banner-ctas { flex-direction: column; align-items: stretch; }
     &__cta--banner { width: 100%; }
+    &__founding { text-align: center; }
+    &__cta--founding { width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
