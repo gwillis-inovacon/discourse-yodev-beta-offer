@@ -21,6 +21,13 @@
   --yodev-beta-img-dev-1: "#{$dev_1}";
   --yodev-beta-img-dev-2: "#{$dev_2}";
   --yodev-beta-img-dev-3: "#{$dev_3}";
+
+  // Vendor marks (YOD-483), byte-identical to the homepage's copies. Each is
+  // the vendor's own official artwork, unmodified — recolouring or restyling a
+  // trademark is what their brand guidelines actually prohibit.
+  --yodev-beta-logo-vscode: "#{$logo_vscode}";
+  --yodev-beta-logo-github: "#{$logo_github}";
+  --yodev-beta-logo-gmail: "#{$logo_gmail}";
 }
 
 // ─── Banner ──────────────────────────────────────────────────────────────────
@@ -967,7 +974,7 @@ $yb-primary: #c3c0ff;
     border-radius: 16px;
     padding: 22px 24px;
     text-align: left;
-    margin-bottom: 4px;
+    margin-bottom: 26px; // section rhythm, same as __cards / __devcards
   }
 
   &__founding-tag {
@@ -1125,9 +1132,12 @@ $yb-primary: #c3c0ff;
     color: #62666d;
     margin-bottom: 12px;
   }
+  // Two per row (YOD-483). Four tiles across one row squeezed each below the
+  // width its label needs — the labels are nowrap, so they would have overflowed
+  // rather than wrapped. A 2x2 grid also matches the homepage's stacked list.
   &__int-row {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
   &__int-item {
@@ -1135,7 +1145,7 @@ $yb-primary: #c3c0ff;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    flex: 1 1 0;
+    min-width: 0; // let a long label ellipsize instead of blowing out the grid
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
@@ -1145,12 +1155,32 @@ $yb-primary: #c3c0ff;
     display: inline-flex;
     flex-shrink: 0;
     color: #9aa2ff;
+
+    // Vendor marks carry their own brand colours — the accent tint above is for
+    // the lucide glyphs only.
+    &.is-logo {
+      color: inherit;
+    }
+    img {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
   }
   &__int-label {
     font-size: 0.78rem;
     font-weight: 510;
     color: #d0d6e0;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &__int-trademarks {
+    margin: 12px 0 0;
+    font-size: 0.68rem;
+    line-height: 1.4;
+    color: #6f7480;
+    text-align: center;
   }
 
   // ── Dev profile cards (marketplace teaser) ──
@@ -1158,7 +1188,10 @@ $yb-primary: #c3c0ff;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 4px 0;
+    // 26px matches __cards, the section rhythm used above. The old 4px left the
+    // last three blocks (dev cards / founding / banner) reading as one run-on
+    // slab while every section above them was clearly separated.
+    margin: 4px 0 26px;
   }
   &__devcard {
     background: rgba(255, 255, 255, 0.02);
@@ -1265,8 +1298,9 @@ $yb-primary: #c3c0ff;
     &__content { padding: 26px 20px 20px; }
     &__cards { grid-template-columns: 1fr; }
     &__workgrid { grid-template-columns: 1fr; }
-    &__int-row { flex-wrap: wrap; }
-    &__int-item { flex-basis: 100%; }
+    // One per row on mobile. Must be a grid override now that __int-row is a
+    // grid — the old flex-wrap/flex-basis pair silently did nothing.
+    &__int-row { grid-template-columns: 1fr; }
     &__devcards { grid-template-columns: 1fr; }
     &__banner {
       flex-direction: column;

@@ -7,7 +7,10 @@
     "workplace_marquee": "assets/workplace-marquee.png",
     "dev_1": "assets/dev-1.jpg",
     "dev_2": "assets/dev-2.jpg",
-    "dev_3": "assets/dev-3.jpg"
+    "dev_3": "assets/dev-3.jpg",
+    "logo_vscode": "assets/logo-vscode.svg",
+    "logo_github": "assets/logo-github.svg",
+    "logo_gmail": "assets/logo-gmail.svg"
   },
   "color_schemes": {}
 }

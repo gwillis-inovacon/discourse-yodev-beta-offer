@@ -118,7 +118,9 @@
           "Claude Code Integration",
           "VS Code Extension",
           "GitHub Integration",
+          "Gmail Integration",
         ],
+        splashTrademarks: "All product names, logos and brands are the property of their respective owners.",
         availAvailable: "Available",
         availLimited: "Limited",
         foundingTag: "Founding cohort",
@@ -184,7 +186,9 @@
           "Integración con Claude Code",
           "Extensión para VS Code",
           "Integración con GitHub",
+          "Integración con Gmail",
         ],
+        splashTrademarks: "Todos los nombres de productos, logotipos y marcas son propiedad de sus respectivos dueños.",
         availAvailable: "Disponible",
         availLimited: "Limitado",
         foundingTag: "Grupo fundador",
@@ -250,7 +254,9 @@
           "Integração com Claude Code",
           "Extensão para VS Code",
           "Integração com GitHub",
+          "Integração com Gmail",
         ],
+        splashTrademarks: "Todos os nomes de produtos, logotipos e marcas são propriedade de seus respectivos donos.",
         availAvailable: "Disponível",
         availLimited: "Limitado",
         foundingTag: "Grupo fundador",
@@ -674,7 +680,21 @@
       return card;
     }
 
-    function buildIntegrations(title, items) {
+    // Integration tiles (YOD-483). Mirrors the homepage: the vendors' own marks
+    // for VS Code, GitHub and Gmail, and a generic terminal glyph for Claude
+    // Code — Anthropic's mark is deliberately NOT used while its trademark
+    // guidance is unresolved. Order matches INT_LOGOS below.
+    //
+    // A null entry means "no vendor mark, fall back to the lucide glyph", which
+    // is what keeps Claude Code on the terminal icon.
+    var INT_LOGOS = [
+      null,
+      "--yodev-beta-logo-vscode",
+      "--yodev-beta-logo-github",
+      "--yodev-beta-logo-gmail",
+    ];
+
+    function buildIntegrations(title, items, trademarks) {
       var wrap = document.createElement("div");
       wrap.className = "yodev-beta-splash__integrations";
       if (title) {
@@ -690,7 +710,24 @@
         cell.className = "yodev-beta-splash__int-item";
         var ic = document.createElement("span");
         ic.className = "yodev-beta-splash__int-icon";
-        ic.appendChild(svgIcon(INT_ICONS[i % INT_ICONS.length], 18));
+
+        var logoVar = INT_LOGOS[i];
+        var logoUrl = logoVar ? readCssVarString(logoVar) : "";
+        if (logoUrl) {
+          var logo = document.createElement("img");
+          logo.src = logoUrl;
+          logo.width = 18;
+          logo.height = 18;
+          // Decorative: the vendor name is in the adjacent label, so an alt
+          // would just repeat it to a screen reader.
+          logo.alt = "";
+          logo.setAttribute("aria-hidden", "true");
+          ic.appendChild(logo);
+          ic.classList.add("is-logo"); // drop the accent tint; keep brand colour
+        } else {
+          ic.appendChild(svgIcon(INT_ICONS[i % INT_ICONS.length], 18));
+        }
+
         var lb = document.createElement("span");
         lb.className = "yodev-beta-splash__int-label";
         lb.textContent = label;
@@ -699,6 +736,12 @@
         row.appendChild(cell);
       });
       wrap.appendChild(row);
+      if (trademarks) {
+        var tm = document.createElement("p");
+        tm.className = "yodev-beta-splash__int-trademarks";
+        tm.textContent = trademarks;
+        wrap.appendChild(tm);
+      }
       return wrap;
     }
 
@@ -1169,7 +1212,7 @@
         "yoDEV Workplace"
       ));
       add(buildWorkFeatures(copy.splashWorkFeatures));
-      add(buildIntegrations(copy.splashIntegrationsTitle, copy.splashIntegrations));
+      add(buildIntegrations(copy.splashIntegrationsTitle, copy.splashIntegrations, copy.splashTrademarks));
 
       // ── worX ── the two homepage audience cards (For Businesses / For Freelancers).
       add(buildSectionTitle("worX", copy.splashMarketTagline));
