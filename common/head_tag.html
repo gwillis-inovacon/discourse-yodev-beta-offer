@@ -1487,8 +1487,19 @@
             ctaHref = s.ctaUrl || "https://yodev.dev";
           }
 
-          // ── Banner (every page, unless dismissed) ────────────────────────
-          if (!isDismissed) {
+          // Auth pages get the signup panel instead — see the banner and splash
+          // conditions below. Computed once here so all three surfaces agree.
+          var authPath = window.location.pathname || "";
+          var isAuthPage =
+            authPath.indexOf("/signup") === 0 || authPath.indexOf("/login") === 0;
+
+          // ── Banner (every page, unless dismissed or on an auth page) ─────
+          // YOD-491: the splash already suppressed itself here ("those already
+          // get the panel") but the banner did not, so /login rendered the big
+          // banner AND the panel with the same message stacked. Worse, the
+          // banner is dismissable and the panel is not — dismissing one left
+          // the other, which reads as broken.
+          if (!isDismissed && !isAuthPage) {
             var bannerParts = {
               tag: isEntitled ? copy.memberTag : copy.tag,
               headline: isEntitled ? copy.memberHeadline : copy.anonHeadline,
@@ -1512,11 +1523,7 @@
           // ── Splash (full-screen, once-ever, anon + member, any page) ─────
           // Independent of the banner's dismissal. Suppressed on /signup and
           // /login (those already get the panel). splash_enabled gates it.
-          var sp = window.location.pathname || "";
-          var onAuthPage =
-            sp.indexOf("/signup") === 0 || sp.indexOf("/login") === 0;
-
-          if (s.splashEnabled && !onAuthPage) {
+          if (s.splashEnabled && !isAuthPage) {
             var splashDismissed;
             if (isLoggedIn && s.splashDismissedFieldId > 0) {
               var splashKey = "user_field_" + s.splashDismissedFieldId;
@@ -1570,8 +1577,12 @@
           var copy2 = COPY[locale2];
           var s2 = readSettings();
           var ctaHref2 = s2.ctaUrl || "https://yodev.dev";
+          // YOD-491: this .catch() runs in its own scope, so it needs its own
+          // auth-page check rather than reusing isAuthPage from the try block.
+          var path2 = window.location.pathname || "";
+          var isAuthPage2 = path2.indexOf("/signup") === 0 || path2.indexOf("/login") === 0;
 
-          if (!isLocallyDismissed()) {
+          if (!isLocallyDismissed() && !isAuthPage2) {
             var bannerEl2 = buildBanner(
               { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, member: false, cta: copy2.anonCta, learnMore: copy2.learnMore },
               ctaHref2,
