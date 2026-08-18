@@ -1487,42 +1487,97 @@
             ctaHref = s.ctaUrl || "https://yodev.dev";
           }
 
-          // Auth pages get the signup panel instead — see the banner and splash
-          // conditions below. Computed once here so all three surfaces agree.
-          var authPath = window.location.pathname || "";
-          var isAuthPage =
-            authPath.indexOf("/signup") === 0 || authPath.indexOf("/login") === 0;
+          function computeIsAuthPage() {
+            var p = window.location.pathname || "";
+            return p.indexOf("/signup") === 0 || p.indexOf("/login") === 0;
+          }
 
-          // ── Banner (every page, unless dismissed or on an auth page) ─────
-          // YOD-491: the splash already suppressed itself here ("those already
-          // get the panel") but the banner did not, so /login rendered the big
-          // banner AND the panel with the same message stacked. Worse, the
-          // banner is dismissable and the panel is not — dismissing one left
-          // the other, which reads as broken.
-          if (!isDismissed && !isAuthPage) {
-            var bannerParts = {
-              tag: isEntitled ? copy.memberTag : copy.tag,
-              headline: isEntitled ? copy.memberHeadline : copy.anonHeadline,
-              sub: copy.sub,
-              member: isEntitled,
-              cta: isEntitled ? copy.memberCta : copy.anonCta,
-              learnMore: copy.learnMore,
-            };
+          // Auth pages get the signup panel instead — see showBanner/showPanel
+          // below. Re-derived on every route check, not just here, because
+          // Discourse's Ember router changes the path without a page reload.
+          var isAuthPage = computeIsAuthPage();
 
-            var bannerEl = buildBanner(bannerParts, ctaHref, function () {
-              console.log("[yodev-beta-offer] banner dismissed by user");
-              setLocallyDismissed();
-              if (isLoggedIn && s.dismissedFieldId > 0) {
-                persistMemberDismissal(username, s.dismissedFieldId, csrfToken);
-              }
-            });
+          // ── Banner / panel toggle functions ───────────────────────────────
+          //
+          // v1 shipped as single-evaluation: this decision was made once, at
+          // the initial page load, and never revisited. That was fine for a
+          // direct hit on /login, but Discourse is an Ember SPA — clicking
+          // "Sign Up" from the homepage, or Back from /signup, does NOT reload
+          // the page, it's a client-side route transition. The banner built
+          // for the ORIGINAL page just sat there, unremoved, because nothing
+          // ever told it the route had changed — and the panel never got a
+          // chance to insert, because insertSignupPanel only ran once, before
+          // the signup form existed to poll for. This is not an edge case: it
+          // is the ordinary way most visitors reach /signup (browse the
+          // community, then click Sign Up), so it needed fixing before the
+          // narrower /login-direct-hit case (YOD-491) was actually complete.
+          //
+          // Elements are built once and reused — removed/reinserted, not
+          // rebuilt — so a dismiss handler wired the first time keeps working
+          // on every later toggle.
+          var bannerEl = null;
+          var panelEl = null;
 
-            insertBanner(bannerEl);
+          function showBannerIfDue() {
+            if (isDismissed) return;
+            if (!bannerEl) {
+              var bannerParts = {
+                tag: isEntitled ? copy.memberTag : copy.tag,
+                headline: isEntitled ? copy.memberHeadline : copy.anonHeadline,
+                sub: copy.sub,
+                member: isEntitled,
+                cta: isEntitled ? copy.memberCta : copy.anonCta,
+                learnMore: copy.learnMore,
+              };
+              bannerEl = buildBanner(bannerParts, ctaHref, function () {
+                console.log("[yodev-beta-offer] banner dismissed by user");
+                setLocallyDismissed();
+                // Without this, showBannerIfDue() still reads the isDismissed
+                // value captured when the page loaded — so leaving an auth
+                // page (which calls showBannerIfDue() again) would resurrect a
+                // banner the user just closed. Caught by testing the actual
+                // dismiss → navigate round-trip, not just presence/absence.
+                isDismissed = true;
+                if (isLoggedIn && s.dismissedFieldId > 0) {
+                  persistMemberDismissal(username, s.dismissedFieldId, csrfToken);
+                }
+                if (bannerEl && bannerEl.parentNode) {
+                  bannerEl.parentNode.removeChild(bannerEl);
+                }
+              });
+            }
+            insertBanner(bannerEl); // no-ops if already in the DOM
+          }
+
+          function hideBanner() {
+            var el = document.querySelector(".yodev-beta-banner");
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+          }
+
+          function showPanel() {
+            if (!panelEl) panelEl = buildSignupPanel(copy);
+            insertSignupPanel(panelEl); // no-ops if already in the DOM
+          }
+
+          function hidePanel() {
+            var el = document.querySelector(".yodev-beta-signup-panel");
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+          }
+
+          // ── Initial render ────────────────────────────────────────────────
+          if (isAuthPage) {
+            showPanel();
+          } else {
+            showBannerIfDue();
           }
 
           // ── Splash (full-screen, once-ever, anon + member, any page) ─────
           // Independent of the banner's dismissal. Suppressed on /signup and
           // /login (those already get the panel). splash_enabled gates it.
+          // Not re-evaluated on route change: it is a full-screen overlay, so
+          // reaching an in-app link to navigate away requires dismissing it
+          // first — the stale-state problem the banner/panel have does not
+          // arise here.
           if (s.splashEnabled && !isAuthPage) {
             var splashDismissed;
             if (isLoggedIn && s.splashDismissedFieldId > 0) {
@@ -1555,20 +1610,32 @@
             }
           }
 
-          // ── Signup / Login panel ─────────────────────────────────────────
-          // Show on /signup and /login regardless of dismissed state (the
-          // panel is informational context for the form, not an interruptive
-          // ad). Does not have a dismiss button.
-          var path = window.location.pathname || "";
-          if (
-            path === "/signup" ||
-            path.indexOf("/signup") === 0 ||
-            path === "/login" ||
-            path.indexOf("/login") === 0
-          ) {
-            var panelEl = buildSignupPanel(copy);
-            insertSignupPanel(panelEl);
+          // ── Re-toggle on Ember SPA navigation ─────────────────────────────
+          // Ember's router uses the History API, so wrapping pushState/
+          // replaceState plus listening for popstate (back/forward) covers
+          // every route change a click or a browser button can produce.
+          function onRouteMaybeChanged() {
+            var nowAuthPage = computeIsAuthPage();
+            if (nowAuthPage === isAuthPage) return; // same surface — nothing to do
+            isAuthPage = nowAuthPage;
+            if (isAuthPage) {
+              hideBanner();
+              showPanel();
+            } else {
+              hidePanel();
+              showBannerIfDue();
+            }
           }
+
+          ["pushState", "replaceState"].forEach(function (method) {
+            var original = history[method];
+            history[method] = function () {
+              var result = original.apply(this, arguments);
+              onRouteMaybeChanged();
+              return result;
+            };
+          });
+          window.addEventListener("popstate", onRouteMaybeChanged);
         })
         .catch(function (e) {
           console.warn("[yodev-beta-offer] error fetching session:", e);
