@@ -524,6 +524,28 @@ $yb-primary: #c3c0ff;
         color: #ffffff !important;
       }
     }
+    // YOD-516 "Continue to community" — the way out, sitting beside the two
+    // ways in. Neutral white-on-transparent rather than the indigo the other
+    // two share: an exit is not an offer, and a third indigo button would
+    // read as a third thing being sold. Still a full-sized button, because
+    // the small grey link at the bottom of the card is what this exists to
+    // replace.
+    &--continue {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #d0d6e0 !important;
+      box-shadow: none;
+      animation: none;
+      font-weight: 590;
+
+      &:hover,
+      &:focus {
+        filter: none;
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.28);
+        color: #f7f8f8 !important;
+      }
+    }
     // Quiet "Learn more" — ghost, no gradient, no pulse.
     &--learn {
       background: transparent;

@@ -69,6 +69,7 @@
         sub: "Full access to worX + Workplace · find your next project and get organized.",
         anonCta: "Activate your 90 days",
         learnMore: "Learn more",
+        continueCommunity: "Continue to community",
         memberCta: "Open yoDEV",
         signupTitle: "You’re getting Business — 90 days, no subscription",
         signupBody: "Full access to worX + Workplace. No credit card. Reverts to Free after, unless you upgrade.",
@@ -137,6 +138,7 @@
         sub: "Acceso completo a worX + Workplace · encuentra tu próximo proyecto y organízate.",
         anonCta: "Activa tus 90 días",
         learnMore: "Saber más",
+        continueCommunity: "Continuar a la comunidad",
         memberCta: "Abrir yoDEV",
         signupTitle: "Obtienes Business por 90 días, sin suscripción",
         signupBody: "Acceso completo a worX + Workplace. Sin tarjeta. Luego vuelve a Free, salvo que actualices.",
@@ -205,6 +207,7 @@
         sub: "Acesso completo ao worX + Workplace · encontre seu próximo projeto e organize-se.",
         anonCta: "Ative seus 90 dias",
         learnMore: "Saiba mais",
+        continueCommunity: "Continuar para a comunidade",
         memberCta: "Abrir yoDEV",
         signupTitle: "Você ganha Business por 90 dias, sem assinatura",
         signupBody: "Acesso completo ao worX + Workplace. Sem cartão. Depois volta ao Free, a menos que faça upgrade.",
@@ -1199,6 +1202,27 @@
       heroCtas.className = "yodev-beta-splash__hero-ctas";
       heroCtas.appendChild(makeCta(ctaLabel, ctaHref, "yodev-beta-splash__cta--hero", onDismiss));
       heroCtas.appendChild(makeCta(copy.learnMore, ctaHref, "yodev-beta-splash__cta--learn", onDismiss));
+      // YOD-516: the way OUT, next to the two ways in.
+      //
+      // Community readership fell after this splash went live. A search
+      // visitor lands on a topic, gets a full-screen card, and the only
+      // named exit was the small grey link at the very bottom — below the
+      // hero, the marquee, the feature grid, the integrations, the worX
+      // cards, the founding offer, the banner and the footnote. The other
+      // two exits are a corner × and the backdrop, neither of which says
+      // where it goes; a × reads as "close ad", and someone who came for
+      // one article will as readily close the tab.
+      //
+      // A button, not a link: it dismisses and stays put. Deliberately
+      // neutral rather than indigo — this is an exit, not an offer, and it
+      // must not compete with the CTA beside it while still being findable.
+      var heroContinue = document.createElement("button");
+      heroContinue.type = "button";
+      heroContinue.className =
+        "yodev-beta-splash__cta yodev-beta-splash__cta--continue";
+      heroContinue.textContent = copy.continueCommunity;
+      heroContinue.addEventListener("click", onDismiss, { once: true });
+      heroCtas.appendChild(heroContinue);
       hero.appendChild(heroCtas);
       add(hero);
 
@@ -1594,10 +1618,11 @@
               console.log("[yodev-beta-offer] splash already dismissed; skipping");
             } else {
               var splashDone = false;
-              var splashEl = buildSplash(copy, isEntitled, ctaHref, function () {
+              function dismissSplash() {
                 if (splashDone) return;
                 splashDone = true;
                 console.log("[yodev-beta-offer] splash dismissed/clicked");
+                document.removeEventListener("keydown", onSplashKey);
                 setSplashLocallyDismissed();
                 if (isLoggedIn && s.splashDismissedFieldId > 0) {
                   persistMemberDismissal(username, s.splashDismissedFieldId, csrfToken);
@@ -1605,7 +1630,20 @@
                 if (splashEl && splashEl.parentNode) {
                   splashEl.parentNode.removeChild(splashEl);
                 }
-              });
+              }
+              // YOD-516: Escape closes it. The AI modal nested inside already
+              // handles Escape; the splash covering someone's article did not,
+              // so the reflex for dismissing a full-screen overlay did nothing.
+              // Ignored while that modal is open, or Escape would close both
+              // at once and dump the reader out of the splash they were still
+              // reading.
+              function onSplashKey(e) {
+                if (e.key !== "Escape") return;
+                if (document.querySelector(".yodev-beta-splash__aimodal")) return;
+                dismissSplash();
+              }
+              var splashEl = buildSplash(copy, isEntitled, ctaHref, dismissSplash);
+              document.addEventListener("keydown", onSplashKey);
               insertSplash(splashEl);
             }
           }
