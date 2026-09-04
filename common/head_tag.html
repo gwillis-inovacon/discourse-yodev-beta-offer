@@ -1516,10 +1516,67 @@
             return p.indexOf("/signup") === 0 || p.indexOf("/login") === 0;
           }
 
+          /**
+           * YOD-564: did this visitor arrive mid-signup from the homepage?
+           *
+           * They have already read this offer — it is what sent them here.
+           * Showing it again, over the create-account modal, sells to someone
+           * who is in the act of buying and puts a full-screen overlay between
+           * them and the form.
+           *
+           * computeIsAuthPage() does not catch them: the homepage flow never
+           * visits /signup or /login. Discourse renders the create-account
+           * modal over `/?yodev_signup=1`, so the pathname is `/`.
+           *
+           * ⚠️ And they cannot have dismissed it, because they have never been
+           * on the community before. That makes this every homepage-first
+           * signup, every time — not a stale-localStorage edge case.
+           *
+           * Two sources, because neither alone covers both journeys:
+           *   - the sessionStorage handoff, written by the activation-redirect
+           *     component. Authoritative, and the ONLY signal on the email
+           *     path, which carries no URL marker.
+           *   - the URL marker, as a fallback for the load where that
+           *     component has not run yet. Both are head_tag scripts with no
+           *     guaranteed order, and it strips the marker as soon as it runs.
+           *
+           * ⚠️ The key literal is duplicated in
+           * discourse-yodev-activation-redirect (HOMEPAGE_SIGNUP_KEY). Theme
+           * components cannot share a module; change both together.
+           */
+          function cameFromHomepageSignup() {
+            try {
+              if (sessionStorage.getItem("yodev_homepage_signup") === "1") {
+                return true;
+              }
+            } catch (e) {
+              // Blocked storage — fall through to the URL check.
+            }
+            try {
+              return (
+                new URLSearchParams(window.location.search).get(
+                  "yodev_signup"
+                ) === "1"
+              );
+            } catch (e) {
+              return false;
+            }
+          }
+
           // Auth pages get the signup panel instead — see showBanner/showPanel
           // below. Re-derived on every route check, not just here, because
           // Discourse's Ember router changes the path without a page reload.
           var isAuthPage = computeIsAuthPage();
+          // Evaluated ONCE, here: the activation-redirect component strips the
+          // URL marker during this same page load, so a later re-read could
+          // legitimately flip false. The sessionStorage handoff survives, but
+          // pinning the value removes the ordering question entirely.
+          var midHomepageSignup = cameFromHomepageSignup();
+          if (midHomepageSignup) {
+            console.log(
+              "[yodev-beta-offer] mid-signup from the homepage — suppressing splash and banner (YOD-564)"
+            );
+          }
 
           // ── Banner / panel toggle functions ───────────────────────────────
           //
@@ -1544,6 +1601,10 @@
 
           function showBannerIfDue() {
             if (isDismissed) return;
+            // YOD-564: same reasoning as the splash, one notch less severe —
+            // the banner does not block the form, but it still re-pitches an
+            // offer this visitor accepted a moment ago on the homepage.
+            if (midHomepageSignup) return;
             if (!bannerEl) {
               var bannerParts = {
                 tag: isEntitled ? copy.memberTag : copy.tag,
@@ -1602,7 +1663,11 @@
           // reaching an in-app link to navigate away requires dismissing it
           // first — the stale-state problem the banner/panel have does not
           // arise here.
-          if (s.splashEnabled && !isAuthPage) {
+          // YOD-564: `!midHomepageSignup` — the splash is a full-screen
+          // overlay, so on this journey it lands squarely on top of the
+          // create-account modal the visitor came to fill in. That makes it
+          // the damaging half of this bug, not just the redundant half.
+          if (s.splashEnabled && !isAuthPage && !midHomepageSignup) {
             var splashDismissed;
             if (isLoggedIn && s.splashDismissedFieldId > 0) {
               var splashKey = "user_field_" + s.splashDismissedFieldId;
