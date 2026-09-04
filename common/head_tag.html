@@ -1550,17 +1550,50 @@
                 return true;
               }
             } catch (e) {
-              // Blocked storage — fall through to the URL check.
+              // Blocked storage — fall through to the URL checks.
             }
             try {
-              return (
-                new URLSearchParams(window.location.search).get(
-                  "yodev_signup"
-                ) === "1"
-              );
-            } catch (e) {
-              return false;
-            }
+              var qs = new URLSearchParams(window.location.search);
+              if (qs.get("yodev_signup") === "1") return true;
+              // ⚠️ On the /auth/<provider> interstitial the marker is not a
+              // parameter, it is INSIDE one:
+              //   /auth/google_oauth2?origin=%2F%3Fyodev_signup%3D1
+              // `origin` is what Discourse will return the visitor to, and it
+              // carries the marker as part of its own query string. Reading
+              // only top-level params misses this page entirely — which is
+              // where the splash was still appearing.
+              var origin = qs.get("origin");
+              if (origin && origin.indexOf("yodev_signup=1") !== -1) {
+                return true;
+              }
+            } catch (e) {}
+            return false;
+          }
+
+          /**
+           * Pages that are a step IN authenticating, not a place to browse.
+           *
+           * Suppression here does not depend on where the visitor came from,
+           * which is the point: chasing origin markers left holes on exactly
+           * the pages that matter most.
+           *
+           *   /auth/<provider>       the confirm interstitial before the
+           *                          provider handshake (YOD-559)
+           *   /u/activate-account/   the email verification screen. On the
+           *                          email journey nothing has marked this
+           *                          browser yet — setActivationFlag() only
+           *                          runs when the visitor CLICKS Activate
+           *                          Account, which is after this page renders.
+           *
+           * Nobody on either page wants a full-screen pitch. They are three
+           * clicks into acting on one.
+           */
+          function isAuthJourneyPage() {
+            var p = window.location.pathname || "";
+            return (
+              p.indexOf("/auth/") === 0 ||
+              p.indexOf("/u/activate-account") === 0
+            );
           }
 
           // Auth pages get the signup panel instead — see showBanner/showPanel
@@ -1571,7 +1604,7 @@
           // URL marker during this same page load, so a later re-read could
           // legitimately flip false. The sessionStorage handoff survives, but
           // pinning the value removes the ordering question entirely.
-          var midHomepageSignup = cameFromHomepageSignup();
+          var midHomepageSignup = cameFromHomepageSignup() || isAuthJourneyPage();
           if (midHomepageSignup) {
             console.log(
               "[yodev-beta-offer] mid-signup from the homepage — suppressing splash and banner (YOD-564)"
