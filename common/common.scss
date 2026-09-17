@@ -1162,6 +1162,11 @@ $yb-primary: #c3c0ff;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
+  // An odd tile count leaves the last one alone in its row (five since
+  // YOD-611). Let it take the full row rather than sit beside a gap.
+  &__int-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
   &__int-item {
     display: flex;
     align-items: center;
