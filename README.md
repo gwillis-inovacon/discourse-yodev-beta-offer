@@ -7,12 +7,14 @@ Portuguese; the active Discourse UI language is detected automatically.
 
 ## What it does
 
-- **Banner (all pages):** A slim indigo top bar with beta offer copy, a CTA
-  button, and a dismiss `×` button. Anonymous visitors see a signup CTA;
-  logged-in members see a "your Business access is live" CTA pointing to the
-  marketplace/app.
+- **Banner (all pages):** A slim indigo top bar promoting the single free plan
+  ("Two apps · One plan · Free — everything included"), a CTA button and a
+  dismiss `×`. Anonymous visitors see "Start now"; logged-in members see
+  "everything is included" with a CTA into the app. (YOD-622, 2026-09-23: the
+  90-day Business launch offer and the founding "Business for life" offer are
+  retired.)
 - **Signup panel (`/signup`, `/login`):** A bordered callout inserted above
-  the signup/login form explaining the 3-month free Business offer. No dismiss
+  the signup/login form explaining that the account is free with everything included. No dismiss
   button — it's contextual info for the form.
 - **Splash (optional, `splash_enabled`):** A **one-time** full-screen takeover
   shown to *every* first-time visitor — anonymous **and** members — on whatever
