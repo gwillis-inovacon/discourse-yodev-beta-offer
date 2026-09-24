@@ -331,6 +331,7 @@
     //   hookPre/hookAccent/hookPost  home.hero.hookPre / hookAccent / hookPost
     //   titleA/plus/titleB           home.hero.titleA / plus / titleB
     //   heroSub                      home.hero.subtitle
+    //   planLine1 / planLine2        home.hero.planLine1 / planLine2
     //   wpLead / wpWords / wpSub     home.workplace.marqueeTitleLead / marqueeWords / marqueeSub
     //   worxTitle/worxSub/worxCta    home.worx.marqueeTitle / marqueeSub / marqueeCta
     //   priceTitle / priceSub        pricing.title / pricing.subtitle
@@ -348,6 +349,8 @@
         "plus": "+",
         "titleB": "yoDEV worX",
         "heroSub": "Built for inspired devs and businesses who deliver.",
+        "planLine1": "Two Apps · One Plan · Free",
+        "planLine2": "Everything Included",
         "wpLead": "One workspace where businesses and devs:",
         "wpWords": [
           "Plan",
@@ -422,6 +425,8 @@
         "plus": "+",
         "titleB": "yoDEV worX",
         "heroSub": "Creado para devs y empresas que inspiran y entregan.",
+        "planLine1": "Dos apps · Un plan · Gratis",
+        "planLine2": "Todo incluido",
         "wpLead": "Un espacio de trabajo donde empresas y devs:",
         "wpWords": [
           "Planifican",
@@ -496,6 +501,8 @@
         "plus": "+",
         "titleB": "yoDEV worX",
         "heroSub": "Criado para devs e empresas inspirados que entregam resultados.",
+        "planLine1": "Dois apps · Um plano · Grátis",
+        "planLine2": "Tudo incluído",
         "wpLead": "Um espaço de trabalho onde empresas e devs:",
         "wpWords": [
           "Planejam",
@@ -727,6 +734,11 @@
       hero.appendChild(products);
 
       hero.appendChild(el("p", "sub", home.heroSub));
+      // Same two lines as the homepage hero (Greg, 2026-09-23).
+      var plan = el("div", "heroplan");
+      plan.appendChild(el("p", "heroplan1", home.planLine1));
+      plan.appendChild(el("p", "heroplan2", home.planLine2));
+      hero.appendChild(plan);
       return hero;
     }
 

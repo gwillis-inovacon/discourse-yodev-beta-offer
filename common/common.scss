@@ -510,6 +510,29 @@ $ys-font: "Inter", "Inter Variable", "SF Pro Display", -apple-system, system-ui,
     color: $ys-text-3;
   }
 
+  // "Dos apps · Un plan · Gratis" / "Todo incluido" — mirrors the homepage hero.
+  &__heroplan {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+  }
+
+  &__heroplan1 {
+    margin: 0;
+    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    font-weight: 510;
+    color: $ys-text-2;
+  }
+
+  &__heroplan2 {
+    margin: 0;
+    font-size: clamp(0.8rem, 1.3vw, 0.9rem);
+    font-weight: 400;
+    color: $ys-text-4;
+  }
+
   // ── Buttons (shared) ──
   &__cta {
     display: inline-flex;
