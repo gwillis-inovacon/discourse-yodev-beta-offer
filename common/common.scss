@@ -19,6 +19,7 @@
   // with no access to SCSS variables — the same channel the settings above use.
   --yodev-beta-img-marquee: "#{$workplace_marquee}";
   --yodev-beta-img-worx: "#{$worx_billing_milestones}"; // YOD-622 splash worX marquee
+  --yodev-beta-img-build: "#{$workplace_lives_build}"; // YOD-639 "Lives where you build"
   --yodev-beta-img-dev-1: "#{$dev_1}";
   --yodev-beta-img-dev-2: "#{$dev_2}";
   --yodev-beta-img-dev-3: "#{$dev_3}";
@@ -675,6 +676,71 @@ $ys-font: "Inter", "Inter Variable", "SF Pro Display", -apple-system, system-ui,
     min-width: 0;
   }
 
+  // ── 3b. "Lives where you build" (YOD-639): MarqueeRow `reverse` puts the
+  // screenshot on the left on desktop only; stacked, text stays first.
+  &__row--reverse &__row-media {
+    order: -1;
+  }
+
+  // MarqueeRow eyebrow (text-[10px] uppercase tracking-widest text-accent).
+  &__row-eyebrow {
+    font-size: 10px;
+    font-weight: 590;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $ys-accent;
+  }
+
+  &__build-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 0 0;
+    list-style: none;
+  }
+
+  &__build-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: $ys-text-2;
+  }
+
+  // The tile is what lets four vendor marks of different colours sit together
+  // (WorkplaceBlock.tsx, YOD-474).
+  &__build-tile {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid $ys-border;
+  }
+
+  &__build-logo {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__build-glyph {
+    display: block;
+    color: $ys-accent;
+  }
+
+  &__build-tm {
+    padding-top: 12px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: $ys-text-4;
+  }
+
   // Rotating pill — homepage .rotating-pill / .rotating-pill__word. The
   // colours are set inline per word (same six hues as RotatingPill.tsx).
   &__pill {
@@ -964,6 +1030,7 @@ $ys-font: "Inter", "Inter Variable", "SF Pro Display", -apple-system, system-ui,
       gap: 32px;
       margin-top: 64px;
     }
+    &__row--reverse &__row-media { order: 0; }
 
     &__pricing { margin-top: 64px; }
     &__pricing-head { margin-bottom: 32px; }

@@ -318,7 +318,7 @@
 
     // ─── Splash DOM builder — a mini yoDEV homepage (YOD-622) ────────────────
     // Top to bottom: hero header → CTA row → Workplace marquee (rotating pill)
-    // → worX marquee → "One plan" pricing card → "Ready to build?" banner →
+    // → "Lives where you build" marquee → worX marquee → "One plan" pricing card → "Ready to build?" banner →
     // footnote + "maybe later". Discourse-restricted: inline SVG, no CDNs,
     // DOM nodes only (never innerHTML for copy). onDismiss fires on ×, either
     // "continue" control, the backdrop, Escape, or any CTA click.
@@ -333,6 +333,8 @@
     //   heroSub                      home.hero.subtitle
     //   planLine1 / planLine2        home.hero.planLine1 / planLine2
     //   wpLead / wpWords / wpSub     home.workplace.marqueeTitleLead / marqueeWords / marqueeSub
+//   build*                       home.workplace.build.* (eyebrow, title, sub, claude, vscode,
+    //                                github, gmail, linear, trademarks) — YOD-639
     //   worxTitle/worxSub/worxCta    home.worx.marqueeTitle / marqueeSub / marqueeCta
     //   priceTitle / priceSub        pricing.title / pricing.subtitle
     //   planName/planTagline/planCta pricing.planName / planTagline / cta
@@ -361,6 +363,15 @@
           "Design"
         ],
         "wpSub": "No more tool-switching. Docs, canvas, databases, and AI — together.",
+        "buildEyebrow": "LIVES WHERE YOU BUILD",
+        "buildTitle": "Your workspace, right where you code.",
+        "buildSub": "Reach your docs from the terminal, your editor, and your repo — no context-switch.",
+        "buildClaude": "Claude Code — read, create, and update docs from your terminal.",
+        "buildVscode": "VS Code — every document, inside your editor.",
+        "buildGithub": "GitHub — bidirectional sync with your repo.",
+        "buildGmail": "Gmail — send any document straight from your own account.",
+        "buildLinear": "Linear — create and update issues without leaving your workspace.",
+        "buildTrademarks": "All product names, logos and brands are the property of their respective owners.",
         "worxTitle": "Run your freelance engagements end-to-end.",
         "worxSub": "Contracts, milestones, invoicing, and disbursements* — one management platform.",
         "worxCta": "Start on worX",
@@ -437,6 +448,15 @@
           "Diseñan"
         ],
         "wpSub": "Sin cambiar de herramienta. Docs, canvas, bases de datos e IA — juntos.",
+        "buildEyebrow": "VIVE DONDE TÚ CONSTRUYES",
+        "buildTitle": "Tu workspace, justo donde codificas.",
+        "buildSub": "Accede a tus docs desde la terminal, tu editor y tu repositorio — sin cambiar de contexto.",
+        "buildClaude": "Claude Code — lee, crea y actualiza docs desde tu terminal.",
+        "buildVscode": "VS Code — cada documento, dentro de tu editor.",
+        "buildGithub": "GitHub — sincronización bidireccional con tu repositorio.",
+        "buildGmail": "Gmail — envía cualquier documento directamente desde tu propia cuenta.",
+        "buildLinear": "Linear — crea y actualiza incidencias sin salir del workspace.",
+        "buildTrademarks": "Todos los nombres de productos, logotipos y marcas son propiedad de sus respectivos dueños.",
         "worxTitle": "Gestiona tus proyectos freelance de principio a fin.",
         "worxSub": "Contratos, hitos, facturación y desembolsos* — una sola plataforma de administración.",
         "worxCta": "Empieza en worX",
@@ -513,6 +533,15 @@
           "Desenham"
         ],
         "wpSub": "Sem troca de ferramentas. Docs, canvas, bancos de dados e IA — juntos.",
+        "buildEyebrow": "VIVE ONDE VOCÊ CONSTRÓI",
+        "buildTitle": "Seu workspace, bem onde você codifica.",
+        "buildSub": "Acesse seus docs pelo terminal, pelo editor e pelo repositório — sem troca de contexto.",
+        "buildClaude": "Claude Code — leia, crie e atualize docs pelo terminal.",
+        "buildVscode": "VS Code — cada documento, dentro do seu editor.",
+        "buildGithub": "GitHub — sincronização bidirecional com seu repositório.",
+        "buildGmail": "Gmail — envie qualquer documento direto da sua própria conta.",
+        "buildLinear": "Linear — crie e atualize issues sem sair do workspace.",
+        "buildTrademarks": "Todos os nomes de produtos, logotipos e marcas são propriedade de seus respectivos donos.",
         "worxTitle": "Gerencie seus projetos freelance do início ao fim.",
         "worxSub": "Contratos, marcos, faturamento e desembolsos* — uma plataforma de administração.",
         "worxCta": "Comece no worX",
@@ -787,6 +816,86 @@
       return row;
     }
 
+    // ── 3b. "Lives where you build" (YOD-639) — WorkplaceBlock.tsx's second
+    // MarqueeRow: `reverse` (screenshot on the left on desktop), `imageFade`
+    // (no browser chrome), eyebrow, and the five integrations with logo tiles.
+    // VS Code / GitHub / Gmail are the vendors' own marks, unmodified (YOD-474);
+    // Claude Code and Linear keep generic glyphs, as on the homepage (Linear's
+    // mark needs their permission, YOD-601/611).
+    var ICON_PATHS = {
+      // Lucide "terminal" and "list-checks" (ISC), the homepage's icons.
+      terminal: ["M4 17l6-6-6-6", "M12 19h8"],
+      listChecks: ["m3 17 2 2 4-4", "m3 7 2 2 4-4", "M13 6h8", "M13 12h8", "M13 18h8"]
+    };
+
+    function buildGlyph(name) {
+      var NS = "http://www.w3.org/2000/svg";
+      var svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("width", "15");
+      svg.setAttribute("height", "15");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "2");
+      svg.setAttribute("stroke-linecap", "round");
+      svg.setAttribute("stroke-linejoin", "round");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("class", "yodev-beta-splash__build-glyph");
+      ICON_PATHS[name].forEach(function (d) {
+        var p = document.createElementNS(NS, "path");
+        p.setAttribute("d", d);
+        svg.appendChild(p);
+      });
+      return svg;
+    }
+
+    function buildBuildRow(home) {
+      var row = el("section", "row yodev-beta-splash__row--reverse");
+      var text = el("div", "row-text");
+      text.appendChild(el("div", "row-eyebrow", home.buildEyebrow));
+      text.appendChild(el("h3", "row-title", home.buildTitle));
+      text.appendChild(el("p", "row-sub", home.buildSub));
+
+      var list = el("ul", "build-list");
+      [
+        { glyph: "terminal", text: home.buildClaude },
+        { logo: "--yodev-beta-logo-vscode", text: home.buildVscode },
+        { logo: "--yodev-beta-logo-github", text: home.buildGithub },
+        { logo: "--yodev-beta-logo-gmail", text: home.buildGmail },
+        { glyph: "listChecks", text: home.buildLinear }
+      ].forEach(function (item) {
+        var li = el("li", "build-item");
+        var tile = el("span", "build-tile");
+        if (item.logo) {
+          var img = el("img", "build-logo");
+          img.src = readCssVarString(item.logo);
+          // Decorative: the vendor name is in the adjacent text.
+          img.alt = "";
+          img.setAttribute("aria-hidden", "true");
+          img.width = 16;
+          img.height = 16;
+          tile.appendChild(img);
+        } else {
+          tile.appendChild(buildGlyph(item.glyph));
+        }
+        li.appendChild(tile);
+        li.appendChild(document.createTextNode(item.text));
+        list.appendChild(li);
+      });
+      text.appendChild(list);
+      text.appendChild(el("p", "build-tm", home.buildTrademarks));
+      row.appendChild(text);
+
+      var media = el("div", "row-media");
+      media.appendChild(buildShot(
+        readCssVarString("--yodev-beta-img-build"),
+        "A doc created by Claude Code over MCP",
+        { fade: true }
+      ));
+      row.appendChild(media);
+      return row;
+    }
+
     // ── 4. worX marquee — heading, sub, "Start on worX", milestones screenshot.
     function buildWorxRow(home, links, onDismiss) {
       var row = el("section", "row");
@@ -929,6 +1038,7 @@
       add(buildHeader(home));
       add(buildCtaRow(copy, isEntitled, links, onDismiss));
       add(buildWorkplaceRow(home));
+      add(buildBuildRow(home));
       add(buildWorxRow(home, links, onDismiss));
       add(buildPricing(home, isEntitled, links, onDismiss));
       add(buildClosingBanner(copy, isEntitled, links, onDismiss));
