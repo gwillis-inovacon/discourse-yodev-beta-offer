@@ -5,6 +5,7 @@
   "component": true,
   "assets": {
     "workplace_marquee": "assets/workplace-marquee.png",
+    "worx_billing_milestones": "assets/worx-billing-milestones.png",
     "dev_1": "assets/dev-1.jpg",
     "dev_2": "assets/dev-2.jpg",
     "dev_3": "assets/dev-3.jpg",

@@ -18,7 +18,10 @@ Portuguese; the active Discourse UI language is detected automatically.
   button — it's contextual info for the form.
 - **Splash (optional, `splash_enabled`):** A **one-time** full-screen takeover
   shown to *every* first-time visitor — anonymous **and** members — on whatever
-  page they land on (great for transient article-link traffic). Dismiss via the
+  page they land on (great for transient article-link traffic). Its content is
+  a mini version of the yoDEV homepage (YOD-622): hero, CTA row, the Workplace
+  and worX marquees, the one-plan pricing card and a "Ready to build?" banner,
+  with copy copied verbatim from the homepage locale files. Dismiss via the
   `×`, a "Continue to the forum" link, the backdrop, or by clicking the CTA.
   Once dismissed/clicked it **never shows again**; returning visitors see only
   the subtle banner. It's a client-side overlay (content renders underneath) —

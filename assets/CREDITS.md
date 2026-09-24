@@ -15,6 +15,17 @@ silently 404s — it has already happened twice (see the earlier commit
 yoDEV Workplace editor screenshot. Ours. Downscaled to 1200px wide from
 `workplace-editor-ai.png` in the yoDEV homepage repo (source is 2514×1592).
 
+Also the splash's Workplace marquee since YOD-622 — the same image the homepage
+Workplace block leads with, so it was reused rather than re-copied.
+
+## worx-billing-milestones.png
+
+worX billing terms + milestone assistant screenshot. Ours. Byte-identical copy
+of `public/worx-billing-milestones.png` in the yoDEV homepage repo (2242×1506,
+538 KB), used by the splash's worX marquee (YOD-622). Not downscaled: a `sips`
+re-encode at 1600px came out larger than the original, and the file has an
+alpha channel, so JPEG was not an option.
+
 ## dev-1.jpg, dev-2.jpg, dev-3.jpg
 
 Sample developer avatars for the fictional profile cards, 128×128 (rendered at
