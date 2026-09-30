@@ -454,6 +454,82 @@ $ys-font: "Inter", "Inter Variable", "SF Pro Display", -apple-system, system-ui,
     outline-offset: 2px;
   }
 
+  // ── 0. yoDEV Decisions announcement (YOD-662) ──
+  // Mirrors the homepage DecisionsFeature, including its thin green border
+  // (#5ee0a0, the community banner's "New on yoDEV" green).
+  &__decisions {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 768px;
+    margin: 0 auto 36px;
+    padding: 18px 20px;
+    border: 1px solid rgba(94, 224, 160, 0.75);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    color: $ys-text-1 !important;
+    text-align: left;
+    text-decoration: none !important;
+    transition: background-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  &__decisions-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__decisions-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__decisions-badge {
+    padding: 2px 8px;
+    border: 1px solid rgba(113, 112, 255, 0.25);
+    border-radius: 9999px;
+    background: rgba(113, 112, 255, 0.1);
+    color: $ys-accent;
+    font-size: 11px;
+    font-weight: 510;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__decisions-name {
+    font-size: 1rem;
+    font-weight: 590;
+    letter-spacing: -0.165px;
+    color: $ys-text-1;
+  }
+
+  &__decisions-line {
+    margin: 6px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: $ys-text-3;
+  }
+
+  &__decisions-cta {
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: $ys-brand;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 510;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   // ── 1. Header (homepage hero) ──
   &__hero {
     display: flex;
@@ -1024,6 +1100,7 @@ $ys-font: "Inter", "Inter Variable", "SF Pro Display", -apple-system, system-ui,
 
     &__card { border-radius: 16px; }
     &__content { padding: 52px 20px 22px; }
+    &__decisions { flex-direction: column; align-items: flex-start; gap: 12px; }
 
     &__row {
       grid-template-columns: minmax(0, 1fr); // text first, image below

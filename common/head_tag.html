@@ -332,6 +332,7 @@
     //   titleA/plus/titleB           home.hero.titleA / plus / titleB
     //   heroSub                      home.hero.subtitle
     //   planLine1 / planLine2        home.hero.planLine1 / planLine2
+    //   decisions*                   home.decisions.badge / name / line / cta — YOD-662
     //   wpLead / wpWords / wpSub     home.workplace.marqueeTitleLead / marqueeWords / marqueeSub
 //   build*                       home.workplace.build.* (eyebrow, title, sub, claude, vscode,
     //                                github, gmail, linear, trademarks) — YOD-639
@@ -353,6 +354,10 @@
         "heroSub": "Built for inspired devs and businesses who deliver.",
         "planLine1": "Two Apps · One Plan · Free",
         "planLine2": "Everything Included",
+        "decisionsBadge": "New",
+        "decisionsName": "yoDEV Decisions",
+        "decisionsLine": "Compare decision models like Jev with any LLM on your own data: accuracy, calibration, cost and latency. Free for members: yoDEV covers the Jev calls.",
+        "decisionsCta": "See the results",
         "wpLead": "One workspace where businesses and devs:",
         "wpWords": [
           "Plan",
@@ -438,6 +443,10 @@
         "heroSub": "Creado para devs y empresas que inspiran y entregan.",
         "planLine1": "Dos apps · Un plan · Gratis",
         "planLine2": "Todo incluido",
+        "decisionsBadge": "Nuevo",
+        "decisionsName": "yoDEV Decisions",
+        "decisionsLine": "Compara modelos de decisión como Jev con cualquier LLM sobre tus propios datos: exactitud, calibración, costo y latencia. Gratis para miembros: yoDEV cubre las llamadas a Jev.",
+        "decisionsCta": "Ver resultados",
         "wpLead": "Un espacio de trabajo donde empresas y devs:",
         "wpWords": [
           "Planifican",
@@ -523,6 +532,10 @@
         "heroSub": "Criado para devs e empresas inspirados que entregam resultados.",
         "planLine1": "Dois apps · Um plano · Grátis",
         "planLine2": "Tudo incluído",
+        "decisionsBadge": "Novo",
+        "decisionsName": "yoDEV Decisions",
+        "decisionsLine": "Compare modelos de decisão como o Jev com qualquer LLM nos seus próprios dados: acurácia, calibração, custo e latência. Grátis para membros: o yoDEV cobre as chamadas ao Jev.",
+        "decisionsCta": "Ver resultados",
         "wpLead": "Um espaço de trabalho onde empresas e devs:",
         "wpWords": [
           "Planejam",
@@ -602,6 +615,10 @@
 
     var WORKPLACE_URL = "https://workplace.yodev.dev";
     var WORX_URL = "https://worx.yodev.dev";
+    // YOD-662: the public results pages, Spanish at `/`, English at `/en`.
+    // Decisions has no Portuguese page; Portuguese readers get the Spanish one
+    // (same rule as the homepage's decisionsResultsUrl).
+    var DECISIONS_URL = "https://decisions.yodev.dev";
 
     var SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -769,6 +786,26 @@
       plan.appendChild(el("p", "heroplan2", home.planLine2));
       hero.appendChild(plan);
       return hero;
+    }
+
+    // ── 0. yoDEV Decisions announcement (YOD-662) — the homepage's
+    // DecisionsFeature above the hero: badge, name, one line, CTA, thin green
+    // border. Opens in a new tab and does NOT dismiss the splash: it is a look
+    // at another app, not a way past this one.
+    function buildDecisionsFeature(home) {
+      var a = el("a", "decisions");
+      a.href = DECISIONS_URL + (getLocale() === "en" ? "/en" : "/");
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      var text = el("div", "decisions-text");
+      var head = el("div", "decisions-head");
+      head.appendChild(el("span", "decisions-badge", home.decisionsBadge));
+      head.appendChild(el("span", "decisions-name", home.decisionsName));
+      text.appendChild(head);
+      text.appendChild(el("p", "decisions-line", home.decisionsLine));
+      a.appendChild(text);
+      a.appendChild(el("span", "decisions-cta", home.decisionsCta + " \u2192"));
+      return a;
     }
 
     // ── 2. CTA row — in, learn more, or out.
@@ -1035,6 +1072,7 @@
       var reveals = [];
       function add(node) { content.appendChild(node); reveals.push(node); }
 
+      add(buildDecisionsFeature(home));
       add(buildHeader(home));
       add(buildCtaRow(copy, isEntitled, links, onDismiss));
       add(buildWorkplaceRow(home));
