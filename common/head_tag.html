@@ -1599,6 +1599,83 @@
         });
     }
 
+    // ─── Width on topic pages (YOD-671 follow-up) ─────────────────────────
+    // On the feed the right-hand sidebar keeps the banner at the topic list's
+    // width (640px at 1440). A topic page has no right sidebar, so #main-outlet
+    // — where the banner is prepended — is the full content width (1104px),
+    // while the topic column (title card + posts) is 976px. On topic pages,
+    // line the banner up with that column, measured live, so its edges match
+    // the title card directly below it; everywhere else remove the inline
+    // styles so the existing layout is untouched. (The end-of-article CTA in
+    // the apex-bridge component aligns to the narrower text column instead —
+    // it belongs to the article; this banner belongs to the page.)
+    // Self-contained: works for the normal and the fallback banner alike.
+    var ALIGN_LOG = "[yodev-beta-offer] ";
+    var alignTimer = null;
+
+    function alignBannerToPost() {
+      var banner = document.querySelector(".yodev-beta-banner");
+      if (!banner || !banner.parentNode) return false;
+      banner.style.marginLeft = "";
+      banner.style.maxWidth = "";
+      if (!/^\/t\//.test(window.location.pathname || "")) return true;
+      var ref = document.querySelector("#topic-title") ||
+        document.querySelector(".topic-area");
+      if (!ref) return false; // topic not rendered yet — caller retries
+      var parent = banner.parentNode.getBoundingClientRect();
+      var post = ref.getBoundingClientRect();
+      var offset = Math.round(post.left - parent.left);
+      if (post.width <= 0 || offset < 0 || post.width > parent.width) return true;
+      banner.style.marginLeft = offset + "px";
+      banner.style.maxWidth = Math.round(post.width) + "px";
+      return true;
+    }
+
+    // Ember renders the route asynchronously: retry briefly, then give up.
+    function scheduleAlign() {
+      if (alignTimer) clearInterval(alignTimer);
+      var elapsed = 0;
+      if (alignBannerToPost()) return;
+      alignTimer = setInterval(function () {
+        elapsed += 200;
+        if (alignBannerToPost() || elapsed >= 10000) {
+          clearInterval(alignTimer);
+          alignTimer = null;
+        }
+      }, 200);
+    }
+
+    ["pushState", "replaceState"].forEach(function (method) {
+      var original = history[method];
+      history[method] = function () {
+        var result = original.apply(this, arguments);
+        setTimeout(scheduleAlign, 0); // after Ember swaps the DOM
+        return result;
+      };
+    });
+    window.addEventListener("popstate", function () { setTimeout(scheduleAlign, 0); });
+
+    var alignResize = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(alignResize);
+      alignResize = setTimeout(alignBannerToPost, 150);
+    });
+
+    // First load: the banner is inserted asynchronously after the session
+    // fetch, so wait for it before aligning.
+    (function waitForBanner() {
+      var waited = 0;
+      var id = setInterval(function () {
+        waited += 250;
+        if (document.querySelector(".yodev-beta-banner")) {
+          clearInterval(id);
+          scheduleAlign();
+        } else if (waited >= 15000) {
+          clearInterval(id);
+        }
+      }, 250);
+    })();
+
     // Run after DOM is available (head_tag runs early, so guard readyState)
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", init);
