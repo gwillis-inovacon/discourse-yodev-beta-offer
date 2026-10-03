@@ -1141,6 +1141,15 @@
     // customisation), we fall back to document.body prepend.
     // To adjust: search DevTools for the outermost content wrapper div.
 
+    // Chat is a full-height app view. Prepending the banner above it pushes
+    // the chat container down, and on mobile the composer and bottom
+    // navigation end up off-screen and unreachable: it looks like a bug, not
+    // an offer. The banner never renders on /chat routes, on any viewport.
+    function isChatRoute() {
+      var p = window.location.pathname || "";
+      return p === "/chat" || p.indexOf("/chat/") === 0;
+    }
+
     function insertBanner(bannerEl) {
       // Guard: don't double-insert (e.g. if init() somehow runs twice)
       if (document.querySelector(".yodev-beta-banner")) {
@@ -1164,6 +1173,8 @@
         }
         // Double-check again in case the interval fired twice
         if (document.querySelector(".yodev-beta-banner")) return;
+        // The insert is asynchronous: the reader may have opened chat since.
+        if (isChatRoute()) return;
         container.insertBefore(bannerEl, container.firstChild);
         console.log(
           "[yodev-beta-offer] banner inserted into " +
@@ -1482,7 +1493,7 @@
           // ── Initial render ────────────────────────────────────────────────
           if (isAuthPage) {
             showPanel();
-          } else {
+          } else if (!isChatRoute()) {
             showBannerIfDue();
           }
 
@@ -1550,13 +1561,21 @@
           // Ember's router uses the History API, so wrapping pushState/
           // replaceState plus listening for popstate (back/forward) covers
           // every route change a click or a browser button can produce.
+          // Three surfaces: auth pages get the signup panel, chat gets
+          // nothing (see isChatRoute), everything else gets the banner.
+          var onChat = isChatRoute();
           function onRouteMaybeChanged() {
             var nowAuthPage = computeIsAuthPage();
-            if (nowAuthPage === isAuthPage) return; // same surface — nothing to do
+            var nowChat = isChatRoute();
+            if (nowAuthPage === isAuthPage && nowChat === onChat) return; // same surface
             isAuthPage = nowAuthPage;
+            onChat = nowChat;
             if (isAuthPage) {
               hideBanner();
               showPanel();
+            } else if (onChat) {
+              hideBanner();
+              hidePanel();
             } else {
               hidePanel();
               showBannerIfDue();
@@ -1585,7 +1604,7 @@
           var path2 = window.location.pathname || "";
           var isAuthPage2 = path2.indexOf("/signup") === 0 || path2.indexOf("/login") === 0;
 
-          if (!isLocallyDismissed() && !isAuthPage2) {
+          if (!isLocallyDismissed() && !isAuthPage2 && !isChatRoute()) {
             var bannerEl2 = buildBanner(
               { tag: copy2.tag, headline: copy2.anonHeadline, sub: copy2.sub, member: false, cta: copy2.anonCta, learnMore: copy2.learnMore },
               ctaHref2,
