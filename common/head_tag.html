@@ -1507,18 +1507,25 @@
           }
 
           // ── Splash (full-screen, once-ever, anon + member, browsing pages) ─
-          // YOD-688: never on topic pages (see isTopicRoute).
+          // YOD-688: never on topic pages (see isTopicRoute), and RE-CHECKED on
+          // SPA navigation. It used to be decided once, at first load — fine
+          // while every page showed it, but once topic pages stopped, a search
+          // visitor who landed on an article and then clicked into a category
+          // never saw it at all. At most once per page session.
           // Independent of the banner's dismissal. Suppressed on /signup and
-          // /login (those already get the panel). splash_enabled gates it.
-          // Not re-evaluated on route change: it is a full-screen overlay, so
-          // reaching an in-app link to navigate away requires dismissing it
-          // first — the stale-state problem the banner/panel have does not
-          // arise here.
+          // /login (those already get the panel) and on chat. splash_enabled
+          // gates it.
           // YOD-564: `!midHomepageSignup` — the splash is a full-screen
           // overlay, so on this journey it lands squarely on top of the
           // create-account modal the visitor came to fill in. That makes it
           // the damaging half of this bug, not just the redundant half.
-          if (s.splashEnabled && !isAuthPage && !midHomepageSignup && !isTopicRoute()) {
+          var splashShown = false;
+          function maybeShowSplash() {
+            if (splashShown) return;
+            if (!s.splashEnabled || midHomepageSignup) return;
+            if (computeIsAuthPage() || isTopicRoute() || isChatRoute()) return;
+            splashShown = true;
+
             var splashDismissed;
             if (isLoggedIn && s.splashDismissedFieldId > 0) {
               var splashKey = "user_field_" + s.splashDismissedFieldId;
@@ -1566,6 +1573,7 @@
               insertSplash(splashEl);
             }
           }
+          maybeShowSplash();
 
           // ── Re-toggle on Ember SPA navigation ─────────────────────────────
           // Ember's router uses the History API, so wrapping pushState/
@@ -1575,6 +1583,7 @@
           // nothing (see isChatRoute), everything else gets the banner.
           var onChat = isChatRoute();
           function onRouteMaybeChanged() {
+            maybeShowSplash();
             var nowAuthPage = computeIsAuthPage();
             var nowChat = isChatRoute();
             if (nowAuthPage === isAuthPage && nowChat === onChat) return; // same surface
