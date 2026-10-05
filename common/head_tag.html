@@ -1145,6 +1145,15 @@
     // the chat container down, and on mobile the composer and bottom
     // navigation end up off-screen and unreachable: it looks like a bug, not
     // an offer. The banner never renders on /chat routes, on any viewport.
+    // YOD-688: a topic page is where a search visitor reads the article they
+    // came for. The full-screen splash over it cost readers (YOD-516); topic
+    // pages now get the apex-bridge end box and mid-article line instead. The
+    // splash stays on browsing pages (home, latest, categories). It is not
+    // marked dismissed here, so it still shows on a later browsing page load.
+    function isTopicRoute() {
+      return /^\/t\//.test(window.location.pathname || "");
+    }
+
     function isChatRoute() {
       var p = window.location.pathname || "";
       return p === "/chat" || p.indexOf("/chat/") === 0;
@@ -1497,7 +1506,8 @@
             showBannerIfDue();
           }
 
-          // ── Splash (full-screen, once-ever, anon + member, any page) ─────
+          // ── Splash (full-screen, once-ever, anon + member, browsing pages) ─
+          // YOD-688: never on topic pages (see isTopicRoute).
           // Independent of the banner's dismissal. Suppressed on /signup and
           // /login (those already get the panel). splash_enabled gates it.
           // Not re-evaluated on route change: it is a full-screen overlay, so
@@ -1508,7 +1518,7 @@
           // overlay, so on this journey it lands squarely on top of the
           // create-account modal the visitor came to fill in. That makes it
           // the damaging half of this bug, not just the redundant half.
-          if (s.splashEnabled && !isAuthPage && !midHomepageSignup) {
+          if (s.splashEnabled && !isAuthPage && !midHomepageSignup && !isTopicRoute()) {
             var splashDismissed;
             if (isLoggedIn && s.splashDismissedFieldId > 0) {
               var splashKey = "user_field_" + s.splashDismissedFieldId;
